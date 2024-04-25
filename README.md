@@ -1,7 +1,7 @@
 # Pxl_Benternet
 
 ## Overview
-This service facilitates spelling corrections through message passing using ZeroMQ (ZMQ). The service architecture employs a client-server model where the server (ZMQsub) subscribes to spelling requests and sends corrected responses, while the client (ZMQpush) sends requests for corrections.
+This service is able to correct spelling mistakes through message passing using ZeroMQ (ZMQ). The service architecture employs a client-server model where the server (ZMQsub) subscribes to spelling requests and sends corrected responses, while the client (ZMQpush) sends requests for corrections. Think of this service as a helpful friend who's really good at spelling. You send it a message with a word or sentence you're not sure about, and it quickly sends back the right spelling. only this one replies faster than any friend could.
 
 ## Contents of Repository
 - dictionary.txt: A text file containing valid words used for spell-checking.
