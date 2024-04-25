@@ -17,7 +17,7 @@ int main() {
         zmq::socket_t subscriber(context, ZMQ_SUB);
         subscriber.connect("tcp://benternet.pxl-ea-ict.be:24042");
 
-        string responseTopic = "thibe>quest!>";
+        string responseTopic = "dries>correct>";
         subscriber.setsockopt(ZMQ_SUBSCRIBE, responseTopic.c_str(), responseTopic.length());
         cout << "[Write 'exit' to exit the code]" << endl;
 
@@ -30,17 +30,15 @@ int main() {
                 return 0;
             }
 
-            string message = "thibe>quest?>StockService";
+            string message = "dries>spelling>" + variableWord + ">";
             pusher.send(message.c_str(), message.size());
             cout << "Sent: [" << message << "]" << endl;
 
 
             zmq::message_t response;
             subscriber.recv(&response);
-            while(1){
             string receivedResponse(static_cast<char*>(response.data()), response.size());
             cout << "Response Received: [" << receivedResponse << "]" << endl;
-        }
         }
 
     }
