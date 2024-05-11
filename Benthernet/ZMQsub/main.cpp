@@ -4,37 +4,73 @@
 #include <fstream>
 #include <vector>
 #include <limits>
+#include <unordered_map>
+#include <chrono>
 
-// Assuming levenshtein and findClosestWord functions are defined here
 using namespace std;
-int levenshtein(const string &s1, int string_length1, const string &s2, int string_length2);
+using namespace std::chrono;
+
+int levenshteinDP(const std::string& s1, const std::string& s2);
 string findClosestWord(const string &inputWord, ifstream &dictionaryFile);
+
+struct UserRateLimit {
+    int count = 0;
+    system_clock::time_point reset_time;
+};
 
 int main() {
     try {
         zmq::context_t context(1);
-
         zmq::socket_t subscriber(context, ZMQ_SUB);
         subscriber.connect("tcp://benternet.pxl-ea-ict.be:24042");
-        string subscribeTopic = "dries>spelling>";
+        string subscribeTopic = "spellingschecker<";
         subscriber.setsockopt(ZMQ_SUBSCRIBE, subscribeTopic.c_str(), subscribeTopic.length());
+
         zmq::socket_t responder(context, ZMQ_PUSH);
         responder.connect("tcp://benternet.pxl-ea-ict.be:24041");
 
-        ifstream dictionaryFile("C:/Users/dries/OneDrive/Desktop/git/Levenshtein-distance/Benthernet/dictionary.txt");
-
+        ifstream dictionaryFile("C:\\Users\\dries\\OneDrive\\Desktop\\git\\Levenshtein-distance\\Benthernet\\dictionary.txt");
         if (!dictionaryFile.is_open()) {
             cerr << "Failed to open dictionary file." << endl;
             return 1;
         }
 
+        unordered_map<string, UserRateLimit> userLimits;
+
         zmq::message_t message;
         while(true) {
             subscriber.recv(&message);
             string receivedMessage(static_cast<char*>(message.data()), message.size());
-            cout << "Received: [" << receivedMessage << "]" << endl;
+            size_t nameStart = subscribeTopic.length();
+            size_t nameEnd = receivedMessage.find_first_of("<", nameStart);
+            size_t sentenceEnd = receivedMessage.find_last_of(">");
 
-            string sentence = receivedMessage.substr(subscribeTopic.length(), receivedMessage.find_last_of(">") - subscribeTopic.length());
+            if (nameEnd == string::npos || sentenceEnd == string::npos) {
+                continue; // malformed message
+            }
+
+            string userName = receivedMessage.substr(nameStart, nameEnd - nameStart);
+            string sentence = receivedMessage.substr(nameEnd + 1, sentenceEnd - nameEnd - 1);
+
+            // Rate limit check
+            auto now = system_clock::now();
+            auto& user = userLimits[userName];
+
+            if (now > user.reset_time) {
+                user.reset_time = now + minutes(2);
+                user.count = 0;
+            }
+
+            if (user.count >= 3) {
+                auto remaining_time = duration_cast<seconds>(user.reset_time - now);
+                string time_left = to_string(remaining_time.count()) + " seconds remaining.";
+                string response = "correctspelling<" + userName + "<Too many requests. " + time_left + ">";
+                responder.send(response.c_str(), response.size());
+                continue;
+            }
+
+            user.count++;
+
 
             istringstream iss(sentence);
             string word, correctedSentence, correctedWord;
@@ -46,10 +82,8 @@ int main() {
                 isFirstWord = false;
             }
 
-            // Send the corrected sentence back
-            string response = "dries>correct>" + correctedSentence + ">";
+            string response = "correctspelling<" + userName + "<" + correctedSentence + ">";
             responder.send(response.c_str(), response.size());
-            cout << "Sent [" << response << "]" << endl;
         }
     }
     catch(zmq::error_t& e) {
@@ -58,6 +92,9 @@ int main() {
 
     return 0;
 }
+
+
+
 
 int levenshteinDP(const std::string& s1, const std::string& s2) {
     int len1 = s1.size(), len2 = s2.size();
