@@ -11,10 +11,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install Qt
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5widgets5
+        sudo apt-get install -y qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5widgets5 libzmq3-dev
 
     # Build ZMQpush
     - name: Configure ZMQpush with qmake
