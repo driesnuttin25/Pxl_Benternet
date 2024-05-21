@@ -8,7 +8,10 @@ CONFIG -= qt
 DEFINES += ZMQ_STATIC
 INCLUDEPATH += $$PWD/../include
 
-LIBS += -L$$PWD/../lib -lzmq
+# Remove the local libzmq.a reference
+# LIBS += -L$$PWD/../lib -lzmq
+
+# Use the system-installed libzmq
 unix:!macx: LIBS += -lzmq
 
 SOURCES += main.cpp
