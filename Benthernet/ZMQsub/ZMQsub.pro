@@ -6,9 +6,9 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 DEFINES += ZMQ_STATIC
-LIBS += -L$$PWD/../lib -lzmq -lws2_32 -lIphlpapi
+LIBS += -L$$PWD/../lib -lzmq
 INCLUDEPATH += $$PWD/../include
 
 SOURCES += main.cpp
 
-LIBS += -L/usr/local/lib -lzmq
+unix:!macx: LIBS += -L/usr/local/lib -lzmq
