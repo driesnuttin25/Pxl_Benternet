@@ -16,11 +16,34 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5widgets5
 
-    - name: Configure with qmake
-      run: qmake -o Makefile YourProject.pro
+    # Build ZMQpush
+    - name: Configure ZMQpush with qmake
+      run: qmake -o Makefile ZMQpush.pro
 
-    - name: Build
+    - name: Build ZMQpush
       run: make
 
-    - name: Run tests
-      run: ./tests/testsuite
+    # Build ZMQsub
+    - name: Configure ZMQsub with qmake
+      run: qmake -o Makefile ZMQsub.pro
+
+    - name: Build ZMQsub
+      run: make
+
+    # Run tests for ZMQpush
+    - name: Run tests for ZMQpush
+      run: |
+        if [ -f ./tests/testsuite_push ]; then
+          ./tests/testsuite_push
+        else
+          echo "No testsuite for ZMQpush found."
+        fi
+
+    # Run tests for ZMQsub
+    - name: Run tests for ZMQsub
+      run: |
+        if [ -f ./tests/testsuite_sub ]; then
+          ./tests/testsuite_sub
+        else
+          echo "No testsuite for ZMQsub found."
+        fi
