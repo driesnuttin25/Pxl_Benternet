@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Qt CI
 
 on: [push, pull_request]
 
@@ -11,22 +11,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Cache CMake files
-      uses: actions/cache@v2
-      with:
-        path: build
-        key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-cmake-
+    - name: Install Qt
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt5-default
 
-    - name: Install dependencies
-      run: sudo apt-get install -y g++ cmake
-
-    - name: Configure CMake
-      run: cmake -B build -S .
+    - name: Configure with qmake
+      run: qmake -o Makefile YourProject.pro
 
     - name: Build
-      run: cmake --build build
+      run: make
 
     - name: Run tests
-      run: ctest --output-on-failure -C Debug --test-dir build
+      run: ./tests/testsuite
