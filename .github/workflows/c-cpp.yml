@@ -18,20 +18,25 @@ jobs:
 
     # Build ZMQpush
     - name: Configure ZMQpush with qmake
+      working-directory: Benthernet/ZMQpush
       run: qmake -o Makefile ZMQpush.pro
 
     - name: Build ZMQpush
+      working-directory: Benthernet/ZMQpush
       run: make
 
     # Build ZMQsub
     - name: Configure ZMQsub with qmake
+      working-directory: Benthernet/ZMQsub
       run: qmake -o Makefile ZMQsub.pro
 
     - name: Build ZMQsub
+      working-directory: Benthernet/ZMQsub
       run: make
 
     # Run tests for ZMQpush
     - name: Run tests for ZMQpush
+      working-directory: Benthernet/ZMQpush
       run: |
         if [ -f ./tests/testsuite_push ]; then
           ./tests/testsuite_push
@@ -41,6 +46,7 @@ jobs:
 
     # Run tests for ZMQsub
     - name: Run tests for ZMQsub
+      working-directory: Benthernet/ZMQsub
       run: |
         if [ -f ./tests/testsuite_sub ]; then
           ./tests/testsuite_sub
