@@ -10,3 +10,5 @@ LIBS += -L$$PWD/../lib -lzmq -lws2_32 -lIphlpapi
 INCLUDEPATH += $$PWD/../include
 
 SOURCES += main.cpp
+
+LIBS += -L/usr/local/lib -lzmq
