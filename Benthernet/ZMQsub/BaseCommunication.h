@@ -1,4 +1,4 @@
-#ifndef BASECOMMUNICATION_H
+\#ifndef BASECOMMUNICATION_H
 #define BASECOMMUNICATION_H
 
 #include <zmq.hpp>
