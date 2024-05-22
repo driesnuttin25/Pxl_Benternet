@@ -1,49 +1,33 @@
+#include "Client.h"
 #include <iostream>
-#include <zmq.hpp>
-#include <string>
+#include <exception>
 
-using namespace std;
+void testSpellChecker(Client& client) {
+    std::string spellCheckRequest = "spellingschecker<Dries<Thiss is an exmple sentence>";
+    std::cout << "Sending spell check request: " << spellCheckRequest << std::endl;
+    client.sendRequest(spellCheckRequest);
+    std::string spellCheckResponse = client.receiveResponse();
+    std::cout << "Spell Checker Response: " << spellCheckResponse << std::endl;
+}
+
+void testRandomSentence(Client& client) {
+    std::string randomSentenceRequest = "randomsentence<Imee<5>";
+    std::cout << "Sending random sentence request: " << randomSentenceRequest << std::endl;
+    client.sendRequest(randomSentenceRequest);
+    std::string randomSentenceResponse = client.receiveResponse();
+    std::cout << "Random Sentence Response: " << randomSentenceResponse << std::endl;
+}
 
 int main() {
     try {
-        zmq::context_t context(1);
-
-        zmq::socket_t pusher(context, ZMQ_PUSH);
-        pusher.connect("tcp://benternet.pxl-ea-ict.be:24041");
-
-        zmq::socket_t subscriber(context, ZMQ_SUB);
-        subscriber.connect("tcp://benternet.pxl-ea-ict.be:24042");
-
-        string responseTopic = "correctspelling<";
-        subscriber.setsockopt(ZMQ_SUBSCRIBE, responseTopic.c_str(), responseTopic.length());
-
-        cout << "[Write 'exit' to exit the code]" << endl;
-
-        while(true) {
-            string username;
-            cout << endl << "Enter your username: ";
-            getline(cin, username);
-
-            string variableWord;
-            cout << "Enter a word or a sentence: ";
-            getline(cin, variableWord);
-            if(variableWord == "exit"){
-                cout << endl << "Thank you for using the spellings checker :)";
-                return 0;
-            }
-
-            string message = "spellingschecker<" + username + "<" + variableWord + ">";
-            pusher.send(message.c_str(), message.size());
-
-            zmq::message_t response;
-            subscriber.recv(&response);
-            string receivedResponse(static_cast<char*>(response.data()), response.size());
-            cout << "Response Received: [" << receivedResponse << "]" << endl;
-        }
+        std::cout << "Creating client..." << std::endl;
+        Client client("tcp://benternet.pxl-ea-ict.be:24041", "tcp://benternet.pxl-ea-ict.be:24042");
+        std::cout << "Client created. Testing spell checker..." << std::endl;
+        testSpellChecker(client);
+        std::cout << "Testing random sentence generator..." << std::endl;
+        testRandomSentence(client);
+    } catch (const std::exception& ex) {
+        std::cerr << "Exception: " << ex.what() << std::endl;
     }
-    catch(zmq::error_t& e) {
-        cerr << "Caught an exception: " << e.what() << endl;
-    }
-
     return 0;
 }
