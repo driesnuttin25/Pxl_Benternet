@@ -1,14 +1,22 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += c++11 console
 CONFIG -= app_bundle
 CONFIG -= qt
 
 DEFINES += ZMQ_STATIC
-LIBS += -L$$PWD/../lib -lzmq -lws2_32 -lIphlpapi
+
 INCLUDEPATH += $$PWD/../include
 
+unix:!macx: LIBS += -lzmq
+win32: LIBS += -lws2_32 -lIphlpapi
+
 SOURCES += main.cpp \
+    mainwindow.cpp \
+    mainwindow.cpp \
     client.cpp
 
-HEADERS += \
-    client.h
+HEADERS += mainwindow.h \
+    client.h \
+    mainwindow.h
+
+FORMS += mainwindow.ui
