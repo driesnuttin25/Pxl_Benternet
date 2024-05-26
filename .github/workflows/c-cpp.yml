@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
@@ -25,22 +25,35 @@ jobs:
     - name: Install dependencies
       run: |
         choco install -y cmake
+        choco install -y jom
+      shell: powershell
+
+    - name: Verify directory structure
+      run: |
+        echo "Root directory contents:"
+        dir
+        echo "Benthernet directory contents:"
+        dir Benthernet
+        echo "ZMQsub directory contents:"
+        dir Benthernet\ZMQsub
+        echo "ZMQClientGUI directory contents:"
+        dir Benthernet\ZMQClientGUI
       shell: powershell
 
     - name: Build ZMQsub project
       run: |
         mkdir build\ZMQsub
         cd build\ZMQsub
-        qmake ../../../Benthernet/ZMQsub/ZMQsub.pro
-        nmake
+        qmake ..\..\..\Benthernet\ZMQsub\ZMQsub.pro
+        jom
       shell: cmd
 
     - name: Build ZMQClientGUI project
       run: |
         mkdir build\ZMQClientGUI
         cd build\ZMQClientGUI
-        qmake ../../../Benthernet/ZMQClientGUI/ZMQClientGUI.pro
-        nmake
+        qmake ..\..\..\Benthernet\ZMQClientGUI\ZMQClientGUI.pro
+        jom
       shell: cmd
 
     - name: Run ZMQsub executable
