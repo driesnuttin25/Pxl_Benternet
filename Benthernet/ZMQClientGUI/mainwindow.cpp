@@ -2,22 +2,36 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QDebug>
+#include <QPixmap>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , client(new Client("tcp://benternet.pxl-ea-ict.be:24041", "tcp://benternet.pxl-ea-ict.be:24042"))
+    , running(true)
 {
     ui->setupUi(this);
     ui->comboBox->addItem("Spelling Checker");
     ui->comboBox->addItem("Random Sentence Generator");
 
+    // Load and set the logo image
+    QPixmap logo(":/new/prefix1/logo.png");
+    ui->logoLabel->setPixmap(logo);
+    ui->logoLabel->setScaledContents(true); // Make the image fit the label size
+
     // Connect the send button's clicked signal to the on_sendButton_clicked slot
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::on_sendButton_clicked);
     connect(ui->usernameLineEdit, &QLineEdit::textChanged, this, &MainWindow::on_usernameLineEdit_textChanged);
+
+    // Start the response checking thread
+    responseThread = std::thread(&MainWindow::checkForResponses, this);
 }
 
 MainWindow::~MainWindow() {
+    running = false;
+    if (responseThread.joinable()) {
+        responseThread.join();
+    }
     delete ui;
     delete client;
 }
@@ -67,26 +81,34 @@ void MainWindow::on_sendButton_clicked() {
     }
 
     client->sendRequest(request);
-    std::string response = client->receiveResponse();
+}
 
-    // Clear previous output
-    ui->textEdit->clear();
+void MainWindow::checkForResponses() {
+    while (running) {
+        if (client->isResponseAvailable()) {
+            std::string response = client->receiveResponse();
+            if (!response.empty()) {
+                // Process the response to strip the prefix and display only the actual output
+                std::string output = response;
+                size_t startPos = response.find("response<");
+                if (startPos != std::string::npos) {
+                    startPos = response.find('<', startPos + 9); // Skip "response<"
+                    if (startPos != std::string::npos) {
+                        startPos = response.find('<', startPos + 1); // Skip the service type
+                        if (startPos != std::string::npos) {
+                            output = response.substr(startPos + 1);
+                        }
+                    }
+                }
+                if (!output.empty() && output.back() == '>') {
+                    output.pop_back();
+                }
 
-    // Process the response to strip the prefix and display only the actual output
-    std::string output = response;
-    size_t startPos = response.find("response<");
-    if (startPos != std::string::npos) {
-        startPos = response.find('<', startPos + 9); // Skip "response<"
-        if (startPos != std::string::npos) {
-            startPos = response.find('<', startPos + 1); // Skip the service type
-            if (startPos != std::string::npos) {
-                output = response.substr(startPos + 1);
+                // Display the cleaned response in the text edit
+                QString qResponse = QString::fromStdString(output);
+                QMetaObject::invokeMethod(ui->textEdit, "setText", Qt::QueuedConnection, Q_ARG(QString, qResponse));
             }
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Polling interval
     }
-    if (!output.empty() && output.back() == '>') {
-        output.pop_back();
-    }
-    // Display the cleaned response
-    ui->textEdit->setText(QString::fromStdString(output));
 }

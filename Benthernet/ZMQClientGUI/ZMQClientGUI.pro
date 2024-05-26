@@ -19,3 +19,5 @@ INCLUDEPATH += "C:/Users/dries/OneDrive/Desktop/git/Pxl_Benternet/Benthernet/inc
 LIBS += -L"C:/Users/dries/OneDrive/Desktop/git/Pxl_Benternet/Benthernet/lib" -lzmq
 
 win32: LIBS += -lws2_32 -lIphlpapi
+RESOURCES += resources.qrc \
+    resources.qrc
