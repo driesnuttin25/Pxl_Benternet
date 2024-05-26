@@ -26,7 +26,15 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev
 
     - name: Verify directory structure
-      run: ls -R
+      run: |
+        echo "Root directory contents:"
+        ls -R
+        echo "Benthernet directory contents:"
+        ls -R Benthernet
+        echo "ZMQsub directory contents:"
+        ls -R Benthernet/ZMQsub
+        echo "ZMQClientGUI directory contents:"
+        ls -R Benthernet/ZMQClientGUI
 
     - name: Build ZMQsub project
       run: |
