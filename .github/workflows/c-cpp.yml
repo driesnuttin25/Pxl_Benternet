@@ -39,14 +39,14 @@ jobs:
     - name: Build ZMQsub project
       run: |
         cd Benthernet/ZMQsub
-        qmake ZMQsub.pro
+        qmake INCLUDEPATH+=../../../Benthernet/include ZMQsub.pro
         make
       shell: bash
 
     - name: Build ZMQClientGUI project
       run: |
         cd Benthernet/ZMQClientGUI
-        qmake ZMQClientGUI.pro
+        qmake INCLUDEPATH+=../../../Benthernet/include ZMQClientGUI.pro
         make
       shell: bash
 
