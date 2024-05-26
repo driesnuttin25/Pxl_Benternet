@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
     - name: Checkout repository
@@ -25,8 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         choco install -y cmake
-        choco install -y windows-sdk-10.0
-        choco install -y visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools"
+      shell: powershell
 
     - name: Build ZMQsub project
       run: |
