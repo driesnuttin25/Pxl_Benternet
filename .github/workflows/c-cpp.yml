@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
@@ -18,46 +18,40 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: 6.5.3
-        host: linux
+        host: windows
         target: desktop
-        arch: gcc_64
+        arch: win64_msvc2019_64
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev libzmq3-dev
-
-    - name: Verify directory structure
       run: |
-        echo "Root directory contents:"
-        ls -R
-        echo "Benthernet directory contents:"
-        ls -R Benthernet
-        echo "ZMQsub directory contents:"
-        ls -R Benthernet/ZMQsub
-        echo "ZMQClientGUI directory contents:"
-        ls -R Benthernet/ZMQClientGUI
+        choco install -y cmake
+        choco install -y windows-sdk-10.0
+        choco install -y visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools"
 
     - name: Build ZMQsub project
       run: |
-        cd Benthernet/ZMQsub
-        qmake INCLUDEPATH+=../../../Benthernet/include ZMQsub.pro
-        make
-      shell: bash
+        mkdir build\ZMQsub
+        cd build\ZMQsub
+        qmake ../../../Benthernet/ZMQsub/ZMQsub.pro
+        nmake
+      shell: cmd
 
     - name: Build ZMQClientGUI project
       run: |
-        cd Benthernet/ZMQClientGUI
-        qmake INCLUDEPATH+=../../../Benthernet/include ZMQClientGUI.pro
-        make
-      shell: bash
+        mkdir build\ZMQClientGUI
+        cd build\ZMQClientGUI
+        qmake ../../../Benthernet/ZMQClientGUI/ZMQClientGUI.pro
+        nmake
+      shell: cmd
 
     - name: Run ZMQsub executable
       run: |
-        cd Benthernet/ZMQsub/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/debug
-        ./ZMQsub
-      shell: bash
+        cd build\ZMQsub
+        ZMQsub.exe
+      shell: cmd
 
     - name: Run ZMQClientGUI executable
       run: |
-        cd Benthernet/ZMQClientGUI/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug
-        ./ZMQClientGUI
-      shell: bash
+        cd build\ZMQClientGUI
+        ZMQClientGUI.exe
+      shell: cmd
