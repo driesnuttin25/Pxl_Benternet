@@ -1,29 +1,38 @@
-name: Qt CI
+name: Qt Project CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: 5.15.2
+        host: linux
+        target: desktop
+        arch: gcc_64
 
     - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y qt5-qmake qtbase5-dev libzmq3-dev
+      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev
 
-    - name: Build ZMQpush
+    - name: Build project
       run: |
-        cd Benthernet/ZMQpush
-        qmake ZMQpush.pro
+        mkdir build
+        cd build
+        qmake ../
         make
 
-    - name: Build ZMQsub
+    - name: Run tests
       run: |
-        cd Benthernet/ZMQsub
-        qmake ZMQsub.pro
-        make
+        cd build
+        ./YourTestExecutable
