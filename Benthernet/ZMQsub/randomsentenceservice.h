@@ -1,20 +1,26 @@
 #ifndef RANDOMSENTENCESERVICE_H
 #define RANDOMSENTENCESERVICE_H
 
-#include "BaseCommunication.h"
+#include <zmq.hpp>
+#include <string>
 #include <fstream>
 #include <vector>
 #include <random>
 
-class RandomSentenceService : public BaseCommunication {
+class RandomSentenceService {
+public:
+    explicit RandomSentenceService(const std::string& dictPath);
+    ~RandomSentenceService();
+    void processMessages();
+
 private:
+    zmq::context_t context;
+    zmq::socket_t subscriber;
+    zmq::socket_t responder;
     std::ifstream dictionaryFile;
     std::vector<std::string> words;
 
-public:
-    explicit RandomSentenceService(const std::string& dictPath);
     std::string generateRandomSentence(int wordCount);
-    void processMessages();
 };
 
 #endif // RANDOMSENTENCESERVICE_H
