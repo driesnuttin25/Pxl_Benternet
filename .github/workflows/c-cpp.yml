@@ -38,28 +38,26 @@ jobs:
 
     - name: Build ZMQsub project
       run: |
-        mkdir -p build/ZMQsub
-        cd build/ZMQsub
-        qmake ../../../Benthernet/ZMQsub/ZMQsub.pro
+        cd Benthernet/ZMQsub
+        qmake ZMQsub.pro
         make
       shell: bash
 
     - name: Build ZMQClientGUI project
       run: |
-        mkdir -p build/ZMQClientGUI
-        cd build/ZMQClientGUI
-        qmake ../../../Benthernet/ZMQClientGUI/ZMQClientGUI.pro
+        cd Benthernet/ZMQClientGUI
+        qmake ZMQClientGUI.pro
         make
       shell: bash
 
     - name: Run ZMQsub executable
       run: |
-        cd build/ZMQsub
-        ./ZMQsub
+        cd Benthernet/ZMQsub/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/debug
+        ./ZMQsub.exe
       shell: bash
 
     - name: Run ZMQClientGUI executable
       run: |
-        cd build/ZMQClientGUI
-        ./ZMQClientGUI
+        cd Benthernet/ZMQClientGUI/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug
+        ./ZMQClientGUI.exe
       shell: bash
