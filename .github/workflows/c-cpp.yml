@@ -23,7 +23,7 @@ jobs:
         arch: gcc_64
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev
+      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev libzmq3-dev
 
     - name: Verify directory structure
       run: |
@@ -53,11 +53,11 @@ jobs:
     - name: Run ZMQsub executable
       run: |
         cd Benthernet/ZMQsub/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/debug
-        ./ZMQsub.exe
+        ./ZMQsub
       shell: bash
 
     - name: Run ZMQClientGUI executable
       run: |
         cd Benthernet/ZMQClientGUI/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug
-        ./ZMQClientGUI.exe
+        ./ZMQClientGUI
       shell: bash
