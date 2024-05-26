@@ -28,6 +28,11 @@ jobs:
         choco install -y jom
       shell: powershell
 
+    - name: Set up Visual Studio environment
+      run: |
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" amd64
+      shell: cmd
+
     - name: Verify directory structure
       run: |
         echo "Root directory contents:"
