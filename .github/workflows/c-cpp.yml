@@ -25,12 +25,16 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev
 
+    - name: List directory contents
+      run: ls -R
+
     - name: Build ZMQsub project
       run: |
         mkdir -p build/ZMQsub
         cd build/ZMQsub
         qmake ../../../Benthernet/ZMQsub/ZMQsub.pro
         make
+      shell: bash
 
     - name: Build ZMQClientGUI project
       run: |
@@ -38,13 +42,16 @@ jobs:
         cd build/ZMQClientGUI
         qmake ../../../Benthernet/ZMQClientGUI/ZMQClientGUI.pro
         make
+      shell: bash
 
     - name: Run ZMQsub executable
       run: |
         cd build/ZMQsub
-        ./ZMQsub # Adjust if there's a different name for the executable
+        ./ZMQsub
+      shell: bash
 
     - name: Run ZMQClientGUI executable
       run: |
         cd build/ZMQClientGUI
-        ./ZMQClientGUI # Adjust if there's a different name for the executable
+        ./ZMQClientGUI
+      shell: bash
