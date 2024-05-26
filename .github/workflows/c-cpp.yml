@@ -17,7 +17,7 @@ jobs:
     - name: Set up Qt
       uses: jurplel/install-qt-action@v3
       with:
-        version: 5.15.2
+        version: 6.5.3
         host: linux
         target: desktop
         arch: gcc_64
@@ -32,7 +32,12 @@ jobs:
         qmake ../
         make
 
-    - name: Run tests
+    - name: Run ZMQsub executable
       run: |
         cd build
-        ./YourTestExecutable
+        ./ZMQsub
+
+    - name: Run ZMQClientGUI executable
+      run: |
+        cd build
+        ./ZMQClientGUI
