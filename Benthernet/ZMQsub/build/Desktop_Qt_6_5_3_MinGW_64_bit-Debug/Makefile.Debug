@@ -19,7 +19,7 @@ CXXFLAGS      = -fno-keep-inline-dllexport -g -Wall -Wextra -Wextra -fexceptions
 INCPATH       = -I../../../ZMQsub -I. -I../../../include -IC:/Qt/6.5.3/mingw_64/mkspecs/win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-subsystem,console -mthreads
-LIBS        =        -LC:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\lib -lzmq -lws2_32 -lIphlpapi   
+LIBS        =        -lws2_32 -lIphlpapi -LC:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\lib -lzmq   
 QMAKE         = C:\Qt\6.5.3\mingw_64\bin\qmake.exe
 DEL_FILE      = del
 CHK_DIR_EXISTS= if not exist
@@ -112,11 +112,10 @@ compiler_clean:
 
 ####### Compile
 
-debug/main.o: ../../main.cpp ../../SpellCheckerService.h \
-		../../BaseCommunication.h \
+debug/main.o: ../../main.cpp ../../spellcheckerservice.h \
 		../../../include/zmq.hpp \
 		../../../include/zmq.h \
-		../../RandomSentenceService.h
+		../../randomsentenceservice.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\..\main.cpp
 
 debug/BaseCommunication.o: ../../BaseCommunication.cpp ../../BaseCommunication.h \
@@ -124,14 +123,12 @@ debug/BaseCommunication.o: ../../BaseCommunication.cpp ../../BaseCommunication.h
 		../../../include/zmq.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\BaseCommunication.o ..\..\BaseCommunication.cpp
 
-debug/randomsentenceservice.o: ../../randomsentenceservice.cpp ../../RandomSentenceService.h \
-		../../BaseCommunication.h \
+debug/randomsentenceservice.o: ../../randomsentenceservice.cpp ../../randomsentenceservice.h \
 		../../../include/zmq.hpp \
 		../../../include/zmq.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\randomsentenceservice.o ..\..\randomsentenceservice.cpp
 
-debug/spellcheckerservice.o: ../../spellcheckerservice.cpp ../../SpellCheckerService.h \
-		../../BaseCommunication.h \
+debug/spellcheckerservice.o: ../../spellcheckerservice.cpp ../../spellcheckerservice.h \
 		../../../include/zmq.hpp \
 		../../../include/zmq.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\spellcheckerservice.o ..\..\spellcheckerservice.cpp
