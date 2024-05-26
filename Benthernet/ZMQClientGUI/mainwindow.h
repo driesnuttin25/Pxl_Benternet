@@ -17,6 +17,7 @@ public:
 
 private slots:
     void on_sendButton_clicked();
+    void on_usernameLineEdit_textChanged(const QString &text);
 
 private:
     Ui::MainWindow *ui;

@@ -94,18 +94,40 @@ void SpellCheckerService::processMessages() {
             std::cout << "Parsed userName: " << userName << std::endl;
             std::cout << "Parsed sentence: " << sentence << std::endl;
 
+            // Handle help request
+            if (sentence == "-help") {
+                std::string helpMessage =
+                    "response<correctspelling<" + userName + "<Spell Checker Service:\n"
+                                                             "This service checks and corrects the spelling of a sentence.\n"
+                                                             "Usage:\n"
+                                                             "    spellingschecker<username<sentence>\n"
+                                                             "Example:\n"
+                                                             "    spellingschecker<JohnDoe<Thiss is an exmple sentence>\n"
+                                                             "Notable exceptions:\n"
+                                                             "    - Too many requests: You can only make a limited number of requests within a given time period.\n"
+                                                             "    - Malformed message: Ensure your message follows the correct format.>";
+                responder.send(zmq::buffer(helpMessage), zmq::send_flags::none);
+                continue;
+            }
+
             // Rate limit check
             auto now = std::chrono::system_clock::now();
-            auto& resetTime = userLimits[userName];
+            auto& userInfo = userLimits[userName];
 
-            if (now > resetTime) {
-                resetTime = now + std::chrono::minutes(2);
-            } else {
-                std::string errorMessage = "response<correctspelling<" + userName + "<Too many requests. Try again later.>";
+            if (now > userInfo.resetTime) {
+                userInfo.resetTime = now + std::chrono::minutes(2);
+                userInfo.requestCount = 0;
+            }
+
+            if (userInfo.requestCount >= 5) {
+                auto remaining_time = std::chrono::duration_cast<std::chrono::seconds>(userInfo.resetTime - now).count();
+                std::string errorMessage = "response<correctspelling<" + userName + "<Too many requests. Try again in " + std::to_string(remaining_time) + " seconds.>";
                 responder.send(zmq::buffer(errorMessage), zmq::send_flags::none);
                 std::cout << "Rate limit exceeded for user: " << userName << std::endl;
                 continue;
             }
+
+            userInfo.requestCount++;
 
             std::istringstream iss(sentence);
             std::string word, correctedSentence, correctedWord;

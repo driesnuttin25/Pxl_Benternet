@@ -4,9 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 DEFINES += ZMQ_STATIC
-win32: LIBS += -lws2_32 -lIphlpapi
-LIBS += -L$$PWD/../lib -lzmq
-
+LIBS += -L$$PWD/../lib -lzmq -lws2_32 -lIphlpapi
 INCLUDEPATH += $$PWD/../include
 
 SOURCES += main.cpp \

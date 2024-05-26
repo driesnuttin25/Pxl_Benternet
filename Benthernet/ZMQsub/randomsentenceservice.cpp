@@ -71,12 +71,23 @@ void RandomSentenceService::processMessages() {
             std::string userName = receivedMessage.substr(nameStart, nameEnd - nameStart);
             std::string wordCountStr = receivedMessage.substr(nameEnd + 1, countEnd - nameEnd - 1);
 
-            // Additional Debugging
-            std::cout << "Parsed userName: " << userName << std::endl;
-            std::cout << "Parsed wordCountStr: " << wordCountStr << std::endl;
+            // Handle help request
+            if (wordCountStr == "-help") {
+                std::string helpMessage =
+                    "response<randomsentence<" + userName + "<Random Sentence Service:\n"
+                                                            "This service generates a random sentence of the specified word count.\n"
+                                                            "Usage:\n"
+                                                            "    randomsentence<username<word_count>\n"
+                                                            "Example:\n"
+                                                            "    randomsentence<JaneDoe<5>\n"
+                                                            "Notable exceptions:\n"
+                                                            "    - Invalid number of words: Ensure the word count is a positive integer.\n"
+                                                            "    - Malformed message: Ensure your message follows the correct format.>";
+                responder.send(zmq::buffer(helpMessage), zmq::send_flags::none);
+                continue;
+            }
 
             int wordCount;
-
             try {
                 wordCount = std::stoi(wordCountStr);
             } catch (const std::invalid_argument& e) {
@@ -107,3 +118,4 @@ void RandomSentenceService::processMessages() {
         }
     }
 }
+
