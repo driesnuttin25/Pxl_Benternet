@@ -44,7 +44,7 @@ jobs:
       run: |
         mkdir build\ZMQsub
         cd build\ZMQsub
-        qmake ..\..\..\Benthernet\ZMQsub\ZMQsub.pro
+        qmake ..\..\Benthernet\ZMQsub\ZMQsub.pro
         jom
       shell: cmd
 
@@ -52,7 +52,7 @@ jobs:
       run: |
         mkdir build\ZMQClientGUI
         cd build\ZMQClientGUI
-        qmake ..\..\..\Benthernet\ZMQClientGUI\ZMQClientGUI.pro
+        qmake ..\..\Benthernet\ZMQClientGUI\ZMQClientGUI.pro
         jom
       shell: cmd
 
