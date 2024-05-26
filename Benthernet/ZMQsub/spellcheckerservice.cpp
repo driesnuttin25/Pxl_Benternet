@@ -1,4 +1,4 @@
-#include "SpellCheckerService.h"
+#include "spellcheckerservice.h"
 #include <sstream>
 #include <limits>
 #include <iostream>

@@ -1,4 +1,4 @@
-#include "RandomSentenceService.h"
+#include "randomsentenceservice.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>

@@ -1,5 +1,5 @@
-#include "SpellCheckerService.h"
-#include "RandomSentenceService.h"
+#include "spellcheckerservice.h"
+#include "randomsentenceservice.h"
 #include <iostream>
 #include <thread>
 
