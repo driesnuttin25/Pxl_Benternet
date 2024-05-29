@@ -32,10 +32,10 @@ int main() {
     try {
         Logger::init(R"(C:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\service.log)");  // Initialize the logger
 
-        std::cout << "Starting services..." << std::endl;
+        //std::cout << "Starting services..." << std::endl;
         Logger::log(Logger::Level::INFO, "Starting services...");
 
-        // Create threads for each service
+        // Create threads for each service so that they don't get overloaded when Bart inevitably checks that
         std::thread spellCheckerThread(runSpellCheckerService);
         std::thread randomSentenceThread(runRandomSentenceService);
 
@@ -43,7 +43,7 @@ int main() {
         spellCheckerThread.join();
         randomSentenceThread.join();
 
-        std::cout << "Services initialized and running..." << std::endl;
+        //std::cout << "Services initialized and running..." << std::endl;
         Logger::log(Logger::Level::INFO, "Services initialized and running...");
     } catch (const std::exception& ex) {
         Logger::log(Logger::Level::ERROR, std::string("Exception in main: ") + ex.what());

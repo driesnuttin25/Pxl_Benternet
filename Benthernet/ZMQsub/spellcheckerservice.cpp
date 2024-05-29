@@ -8,7 +8,7 @@
 #include <algorithm>
 
 /**********************************
-*  Spell Checker Service Class Implementation
+*  Spell Checker Service Class
 **********************************/
 
 // Constructor: Initialize ZMQ context and sockets, load dictionary
@@ -141,11 +141,13 @@ void SpellCheckerService::processMessages() {
                 userInfo.resetTime = now + std::chrono::minutes(2);
                 userInfo.requestCount = 0;
             }
-
+            // Ok so this limits the user to 5 requests every 2 minutes
+            // If they go over that... Too bad, gotta wait
             if (userInfo.requestCount >= 5) {
                 auto remaining_time = std::chrono::duration_cast<std::chrono::seconds>(userInfo.resetTime - now).count();
                 std::string errorMessage = "response<correctspelling<" + userName + "<Too many requests. Try again in " + std::to_string(remaining_time) + " seconds.>";
                 responder.send(zmq::buffer(errorMessage), zmq::send_flags::none);
+                // Quite cool no? It even sends how much time is left with std::to_string(remaining_time) hehehe
                 Logger::log(Logger::Level::INFO, "Rate limit exceeded for user: " + userName);
                 continue;
             }

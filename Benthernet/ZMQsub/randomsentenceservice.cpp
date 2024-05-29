@@ -7,7 +7,7 @@
 #include <algorithm>
 
 /**********************************
-*  Random Sentence Service Class Implementation
+*  Random Sentence Service Class
 **********************************/
 
 RandomSentenceService::RandomSentenceService(const std::string& dictPath)
@@ -36,9 +36,10 @@ RandomSentenceService::~RandomSentenceService() {
     }
 }
 
-// Generate a random sentence with the specified word count
+// This generates a random sentence with the specified word count, looks fancy right, it's not...?
 std::string RandomSentenceService::generateRandomSentence(int wordCount) {
     std::random_device rd;
+    // Look at me actually trying to use good randomeness
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, words.size() - 1);
 
@@ -74,13 +75,13 @@ void RandomSentenceService::processMessages() {
                 continue;
             }
 
-            // Check if the message is a response and ignore it
+            // Check if the message is a response and ignore it obviously...
             if (receivedMessage.find("response<") == 0) {
                 Logger::log(Logger::Level::INFO, "Ignoring response message: " + receivedMessage);
                 continue;
             }
 
-            size_t nameStart = 15;  // Length of "randomsentence<"
+            size_t nameStart = 15;  // Length of "randomsentence<" I know this is lazy but shhhh it's the easiest way
             size_t nameEnd = receivedMessage.find('<', nameStart);
             size_t countEnd = receivedMessage.find('>', nameEnd);
             if (nameEnd == std::string::npos || countEnd == std::string::npos) {
@@ -93,7 +94,7 @@ void RandomSentenceService::processMessages() {
 
             logInteraction(userName);
 
-            // Handle help request
+            // Handle help request cause God knows we'll need some help with code like this.
             if (wordCountStr == "-help") {
                 std::string helpMessage =
                     "response<randomsentence<" + userName + "<Random Sentence Service:\n"

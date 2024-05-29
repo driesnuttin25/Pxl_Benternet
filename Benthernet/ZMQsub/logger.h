@@ -8,6 +8,10 @@
 #include <ctime>
 #include <iomanip>
 
+/**********************************
+*  Logger Service class
+**********************************/
+
 class Logger {
 public:
     enum class Level {
