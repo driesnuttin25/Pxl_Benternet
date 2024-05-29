@@ -109,7 +109,7 @@ void RandomSentenceService::processMessages() {
                 responder.send(zmq::buffer(helpMessage), zmq::send_flags::none);
                 continue;
             }
-
+            // Alright this is just error checking to make sure we actually got everything right.
             int wordCount;
             try {
                 wordCount = std::stoi(wordCountStr);
