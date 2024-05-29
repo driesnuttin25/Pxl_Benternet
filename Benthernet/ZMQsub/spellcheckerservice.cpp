@@ -1,4 +1,5 @@
 #include "spellcheckerservice.h"
+#include "logger.h"
 #include <sstream>
 #include <limits>
 #include <iostream>
@@ -12,7 +13,7 @@
 
 // Constructor: Initialize ZMQ context and sockets, load dictionary
 SpellCheckerService::SpellCheckerService(const std::string& dictPath)
-    : context(1), subscriber(context, ZMQ_SUB), responder(context, ZMQ_PUSH) {
+    : context(1), subscriber(context, ZMQ_SUB), responder(context, ZMQ_PUSH), interactionCount(0) {
     dictionaryFile.open(dictPath);
     if (!dictionaryFile.is_open()) {
         throw std::runtime_error("Failed to open dictionary file.");
@@ -20,7 +21,7 @@ SpellCheckerService::SpellCheckerService(const std::string& dictPath)
     subscriber.connect("tcp://benternet.pxl-ea-ict.be:24042");
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "spellingschecker<", 17);
     responder.connect("tcp://benternet.pxl-ea-ict.be:24041");
-    std::cout << "Subscribed to topic: spellingschecker<" << std::endl;
+    Logger::log(Logger::Level::INFO, "Subscribed to topic: spellingschecker<");
 }
 
 // Destructor: Close the dictionary file if open
@@ -73,25 +74,33 @@ std::string SpellCheckerService::findClosestWord(const std::string& inputWord) {
     return closestWords.empty() ? inputWord : closestWords.front();
 }
 
+// Log interactions
+void SpellCheckerService::logInteraction(const std::string& userName) {
+    interactionCount++;
+    userNames.insert(userName);
+    Logger::log(Logger::Level::INFO, "Total interactions: " + std::to_string(interactionCount));
+    Logger::log(Logger::Level::INFO, "Users interacted: " + std::to_string(userNames.size()));
+}
+
 // Process incoming messages and generate appropriate responses
 void SpellCheckerService::processMessages() {
     while (true) {
         try {
             zmq::message_t message;
-            std::cout << "Waiting to receive message..." << std::endl;
+            Logger::log(Logger::Level::INFO, "Waiting to receive message...");
             subscriber.recv(message);
             std::string receivedMessage(static_cast<char*>(message.data()), message.size());
-            std::cout << "Received message: " << receivedMessage << std::endl;
+            Logger::log(Logger::Level::INFO, "Received message: " + receivedMessage);
 
             // Check if the message is for this service
             if (receivedMessage.find("spellingschecker<") != 0) {
-                std::cout << "Ignoring unrelated message: " << receivedMessage << std::endl;
+                Logger::log(Logger::Level::WARNING, "Ignoring unrelated message: " + receivedMessage);
                 continue;
             }
 
             // Check if the message is a response and ignore it
             if (receivedMessage.find("response<") == 0) {
-                std::cout << "Ignoring response message: " << receivedMessage << std::endl;
+                Logger::log(Logger::Level::INFO, "Ignoring response message: " + receivedMessage);
                 continue;
             }
 
@@ -99,12 +108,14 @@ void SpellCheckerService::processMessages() {
             size_t nameEnd = receivedMessage.find('<', nameStart);
             size_t sentenceEnd = receivedMessage.find('>', nameEnd);
             if (nameEnd == std::string::npos || sentenceEnd == std::string::npos) {
-                std::cerr << "Malformed message received: " << receivedMessage << std::endl;
+                Logger::log(Logger::Level::ERROR, "Malformed message received: " + receivedMessage);
                 continue;
             }
 
             std::string userName = receivedMessage.substr(nameStart, nameEnd - nameStart);
             std::string sentence = receivedMessage.substr(nameEnd + 1, sentenceEnd - nameEnd - 1);
+
+            logInteraction(userName);
 
             // Handle help request
             if (sentence == "-help") {
@@ -135,7 +146,7 @@ void SpellCheckerService::processMessages() {
                 auto remaining_time = std::chrono::duration_cast<std::chrono::seconds>(userInfo.resetTime - now).count();
                 std::string errorMessage = "response<correctspelling<" + userName + "<Too many requests. Try again in " + std::to_string(remaining_time) + " seconds.>";
                 responder.send(zmq::buffer(errorMessage), zmq::send_flags::none);
-                std::cout << "Rate limit exceeded for user: " << userName << std::endl;
+                Logger::log(Logger::Level::INFO, "Rate limit exceeded for user: " + userName);
                 continue;
             }
 
@@ -154,7 +165,7 @@ void SpellCheckerService::processMessages() {
             std::string responseMessage = "response<correctspelling<" + userName + "<" + correctedSentence + ">";
             responder.send(zmq::buffer(responseMessage), zmq::send_flags::none);
         } catch (const std::exception& ex) {
-            std::cerr << "Exception in processing message: " << ex.what() << std::endl;
+            Logger::log(Logger::Level::ERROR, std::string("Exception in processing message: ") + ex.what());
         }
     }
 }

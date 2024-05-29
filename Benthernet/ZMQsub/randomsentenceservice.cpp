@@ -1,4 +1,5 @@
 #include "randomsentenceservice.h"
+#include "logger.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
@@ -10,7 +11,7 @@
 **********************************/
 
 RandomSentenceService::RandomSentenceService(const std::string& dictPath)
-    : context(1), subscriber(context, ZMQ_SUB), responder(context, ZMQ_PUSH) {
+    : context(1), subscriber(context, ZMQ_SUB), responder(context, ZMQ_PUSH), interactionCount(0) {
     dictionaryFile.open(dictPath);
     if (!dictionaryFile.is_open()) {
         throw std::runtime_error("Failed to open dictionary file.");
@@ -25,7 +26,7 @@ RandomSentenceService::RandomSentenceService(const std::string& dictPath)
     subscriber.connect("tcp://benternet.pxl-ea-ict.be:24042");
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "randomsentence<", 15);
     responder.connect("tcp://benternet.pxl-ea-ict.be:24041");
-    std::cout << "Subscribed to topic: randomsentence<" << std::endl;
+    Logger::log(Logger::Level::INFO, "Subscribed to topic: randomsentence<");
 }
 
 // Destructor: Close the dictionary file if open
@@ -49,25 +50,33 @@ std::string RandomSentenceService::generateRandomSentence(int wordCount) {
     return sentence.str();
 }
 
+// Log interactions
+void RandomSentenceService::logInteraction(const std::string& userName) {
+    interactionCount++;
+    userNames.insert(userName);
+    Logger::log(Logger::Level::INFO, "Total interactions: " + std::to_string(interactionCount));
+    Logger::log(Logger::Level::INFO, "Users interacted: " + std::to_string(userNames.size()));
+}
+
 // Process incoming messages and generate appropriate responses
 void RandomSentenceService::processMessages() {
     while (true) {
         try {
             zmq::message_t message;
-            std::cout << "Waiting to receive message..." << std::endl;
+            Logger::log(Logger::Level::INFO, "Waiting to receive message...");
             subscriber.recv(message);
             std::string receivedMessage(static_cast<char*>(message.data()), message.size());
-            std::cout << "Received message: " << receivedMessage << std::endl;
+            Logger::log(Logger::Level::INFO, "Received message: " + receivedMessage);
 
             // Check if the message is for this service
             if (receivedMessage.find("randomsentence<") != 0) {
-                std::cout << "Ignoring unrelated message: " << receivedMessage << std::endl;
+                Logger::log(Logger::Level::WARNING, "Ignoring unrelated message: " + receivedMessage);
                 continue;
             }
 
             // Check if the message is a response and ignore it
             if (receivedMessage.find("response<") == 0) {
-                std::cout << "Ignoring response message: " << receivedMessage << std::endl;
+                Logger::log(Logger::Level::INFO, "Ignoring response message: " + receivedMessage);
                 continue;
             }
 
@@ -75,12 +84,14 @@ void RandomSentenceService::processMessages() {
             size_t nameEnd = receivedMessage.find('<', nameStart);
             size_t countEnd = receivedMessage.find('>', nameEnd);
             if (nameEnd == std::string::npos || countEnd == std::string::npos) {
-                std::cerr << "Malformed message received: " << receivedMessage << std::endl;
+                Logger::log(Logger::Level::ERROR, "Malformed message received: " + receivedMessage);
                 continue;
             }
 
             std::string userName = receivedMessage.substr(nameStart, nameEnd - nameStart);
             std::string wordCountStr = receivedMessage.substr(nameEnd + 1, countEnd - nameEnd - 1);
+
+            logInteraction(userName);
 
             // Handle help request
             if (wordCountStr == "-help") {
@@ -102,12 +113,12 @@ void RandomSentenceService::processMessages() {
             try {
                 wordCount = std::stoi(wordCountStr);
             } catch (const std::invalid_argument& e) {
-                std::cerr << "Invalid number format for word count: " << wordCountStr << std::endl;
+                Logger::log(Logger::Level::ERROR, "Invalid number format for word count: " + wordCountStr);
                 std::string errorMessage = "response<randomsentence<" + userName + "<Invalid number of words>";
                 responder.send(zmq::buffer(errorMessage), zmq::send_flags::none);
                 continue;
             } catch (const std::out_of_range& e) {
-                std::cerr << "Number out of range for word count: " << wordCountStr << std::endl;
+                Logger::log(Logger::Level::ERROR, "Number out of range for word count: " + wordCountStr);
                 std::string errorMessage = "response<randomsentence<" + userName + "<Number of words out of range>";
                 responder.send(zmq::buffer(errorMessage), zmq::send_flags::none);
                 continue;
@@ -116,16 +127,16 @@ void RandomSentenceService::processMessages() {
             if (wordCount <= 0) {
                 std::string errorMessage = "response<randomsentence<" + userName + "<Invalid number of words>";
                 responder.send(zmq::buffer(errorMessage), zmq::send_flags::none);
-                std::cout << "Invalid word count for user: " << userName << std::endl;
+                Logger::log(Logger::Level::INFO, "Invalid word count for user: " + userName);
                 continue;
             }
 
             std::string generatedSentence = generateRandomSentence(wordCount);
             std::string responseMessage = "response<randomsentence<" + userName + "<" + generatedSentence + ">";
-            std::cout << "Sending response: " + responseMessage << std::endl;
+            Logger::log(Logger::Level::INFO, "Sending response: " + responseMessage);
             responder.send(zmq::buffer(responseMessage), zmq::send_flags::none);
         } catch (const std::exception& ex) {
-            std::cerr << "Exception in processing message: " << ex.what() << std::endl;
+            Logger::log(Logger::Level::ERROR, std::string("Exception in processing message: ") + ex.what());
         }
     }
 }

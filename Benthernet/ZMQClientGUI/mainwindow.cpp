@@ -5,7 +5,7 @@
 #include <QPixmap>
 
 /**********************************
-*  Main Window Class Implementation
+*  Main Window Class
 **********************************/
 
 // Constructor: Initializes UI, sets up the client, and starts the response thread
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Load and set the logo image
     QPixmap logo(":/new/prefix1/logo.png");
     ui->logoLabel->setPixmap(logo);
-    ui->logoLabel->setScaledContents(true); // Make the image fit the label size
+    ui->logoLabel->setScaledContents(true);
 
     // Connect the send button's clicked signal to the on_sendButton_clicked slot
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::on_sendButton_clicked);

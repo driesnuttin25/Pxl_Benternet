@@ -4,7 +4,7 @@
 #include <chrono>
 
 /**********************************
-*  Client Class Implementation
+*  Client Class
 **********************************/
 
 // Constructor: Initializes the ZMQ context and connects sockets
