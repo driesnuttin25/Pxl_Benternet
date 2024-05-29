@@ -9,12 +9,12 @@
 
 // Constructor: Initializes the ZMQ context and connects sockets
 Client::Client(const std::string& pushAddress, const std::string& subAddress)
-    : context(1), pusher(context, zmq::socket_type::push), subscriber(context, zmq::socket_type::sub) {
+    : context(1), pusher(context, zmq::socket_type::push), subscriber(context, zmq::socket_type::sub), heartbeatTopic("<heartbeat<dries_project>") {
     std::cout << "Connecting to " << pushAddress << " and " << subAddress << std::endl;
     pusher.connect(pushAddress);
     subscriber.connect(subAddress);
-    subscriber.setsockopt(ZMQ_SUBSCRIBE, "response<", 8);  // Subscribe to all responses
-    std::cout << "Subscribed to all response topics" << std::endl;
+    subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);  // Subscribe to all topics
+    std::cout << "Subscribed to all topics" << std::endl;
 }
 
 // Sends a request to the server
@@ -53,4 +53,13 @@ bool Client::isResponseAvailable() {
     zmq::pollitem_t items[] = { {static_cast<void*>(subscriber), 0, ZMQ_POLLIN, 0} };
     zmq::poll(&items[0], 1, std::chrono::milliseconds(100));
     return items[0].revents & ZMQ_POLLIN;
+}
+
+// Checks if a heartbeat message is received
+bool Client::isHeartbeatReceived() {
+    if (isResponseAvailable()) {
+        std::string response = receiveResponse();
+        return response.find(heartbeatTopic) != std::string::npos;
+    }
+    return false;
 }

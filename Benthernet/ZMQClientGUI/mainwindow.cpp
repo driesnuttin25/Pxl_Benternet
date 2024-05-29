@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Start the response checking thread
     responseThread = std::thread(&MainWindow::checkForResponses, this);
+    heartbeatThread = std::thread(&MainWindow::checkForHeartbeat, this);
 }
 
 // Destructor: Cleans up resources
@@ -37,6 +38,9 @@ MainWindow::~MainWindow() {
     running = false;
     if (responseThread.joinable()) {
         responseThread.join();
+    }
+    if (heartbeatThread.joinable()) {
+        heartbeatThread.join();
     }
     delete ui;
     delete client;
@@ -118,5 +122,33 @@ void MainWindow::checkForResponses() {
             }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Polling interval
+    }
+}
+
+// Method to check for heartbeat messages in a separate thread
+void MainWindow::checkForHeartbeat() {
+    bool connected = false;
+    while (running) {
+        if (client->isHeartbeatReceived()) {
+            if (!connected) {
+                connected = true;
+                displayStatus(connected);
+            }
+        } else {
+            if (connected) {
+                connected = false;
+                displayStatus(connected);
+            }
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // Check interval
+    }
+}
+
+// Method to display connection status
+void MainWindow::displayStatus(bool connected) {
+    if (connected) {
+        ui->statusLabel->setText("Connected to service");
+    } else {
+        ui->statusLabel->setText("Disconnected from service");
     }
 }

@@ -31,11 +31,18 @@ private slots:
     // Method to check for responses from the server
     void checkForResponses();
 
+    // Method to check for heartbeat messages
+    void checkForHeartbeat();
+
 private:
     Ui::MainWindow *ui;
     Client *client;           // Pointer to the client
     std::thread responseThread; // Thread for checking responses
+    std::thread heartbeatThread; // Thread for checking heartbeats
     std::atomic<bool> running;  // Flag to control the response thread
+
+    // Method to display connection status
+    void displayStatus(bool connected);
 };
 
 #endif // MAINWINDOW_H

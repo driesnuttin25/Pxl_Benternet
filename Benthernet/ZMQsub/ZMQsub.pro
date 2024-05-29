@@ -9,12 +9,14 @@ INCLUDEPATH += $$PWD/../include
 
 SOURCES += main.cpp \
     BaseCommunication.cpp \
+    heartbeat.cpp \
     logger.cpp \
     randomsentenceservice.cpp \
     spellcheckerservice.cpp
 
 HEADERS += \
     BaseCommunication.h \
+    heartbeat.h \
     logger.h \
     randomsentenceservice.h \
     spellcheckerservice.h

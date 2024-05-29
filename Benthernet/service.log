@@ -25,3 +25,20 @@
 [2024-05-29 18:15:00] [INFO] Total interactions: 3
 [2024-05-29 18:15:00] [INFO] Users interacted: 1
 [2024-05-29 18:15:00] [INFO] Waiting to receive message...
+[2024-05-29 18:48:21] [INFO] Starting services...
+[2024-05-29 18:48:21] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:48:21] [INFO] Subscribed to topic: spellingschecker<
+[2024-05-29 18:48:21] [INFO] Waiting to receive message...
+[2024-05-29 18:48:21] [INFO] Subscribed to topic: randomsentence<
+[2024-05-29 18:48:21] [INFO] Waiting to receive message...
+[2024-05-29 18:48:31] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:48:41] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:48:51] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:49:01] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:49:11] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:49:21] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:49:31] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:49:41] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:49:51] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:50:01] [INFO] Sent heartbeat: <heartbeat<dries_project>
+[2024-05-29 18:50:11] [INFO] Sent heartbeat: <heartbeat<dries_project>
