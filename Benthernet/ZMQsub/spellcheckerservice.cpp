@@ -6,6 +6,11 @@
 #include <vector>
 #include <algorithm>
 
+/**********************************
+*  Spell Checker Service Class Implementation
+**********************************/
+
+// Constructor: Initialize ZMQ context and sockets, load dictionary
 SpellCheckerService::SpellCheckerService(const std::string& dictPath)
     : context(1), subscriber(context, ZMQ_SUB), responder(context, ZMQ_PUSH) {
     dictionaryFile.open(dictPath);
@@ -18,12 +23,14 @@ SpellCheckerService::SpellCheckerService(const std::string& dictPath)
     std::cout << "Subscribed to topic: spellingschecker<" << std::endl;
 }
 
+// Destructor: Close the dictionary file if open
 SpellCheckerService::~SpellCheckerService() {
     if (dictionaryFile.is_open()) {
         dictionaryFile.close();
     }
 }
 
+// Calculate the Levenshtein distance between two strings
 int SpellCheckerService::levenshteinDP(const std::string& s1, const std::string& s2) {
     int len1 = s1.size(), len2 = s2.size();
     std::vector<std::vector<int>> dp(len1 + 1, std::vector<int>(len2 + 1));
@@ -41,6 +48,7 @@ int SpellCheckerService::levenshteinDP(const std::string& s1, const std::string&
     return dp[len1][len2];
 }
 
+// Find the closest word in the dictionary to the input word
 std::string SpellCheckerService::findClosestWord(const std::string& inputWord) {
     dictionaryFile.clear();
     dictionaryFile.seekg(0, std::ios::beg);
@@ -65,6 +73,7 @@ std::string SpellCheckerService::findClosestWord(const std::string& inputWord) {
     return closestWords.empty() ? inputWord : closestWords.front();
 }
 
+// Process incoming messages and generate appropriate responses
 void SpellCheckerService::processMessages() {
     while (true) {
         try {
@@ -73,6 +82,12 @@ void SpellCheckerService::processMessages() {
             subscriber.recv(message);
             std::string receivedMessage(static_cast<char*>(message.data()), message.size());
             std::cout << "Received message: " << receivedMessage << std::endl;
+
+            // Check if the message is for this service
+            if (receivedMessage.find("spellingschecker<") != 0) {
+                std::cout << "Ignoring unrelated message: " << receivedMessage << std::endl;
+                continue;
+            }
 
             // Check if the message is a response and ignore it
             if (receivedMessage.find("response<") == 0) {
@@ -90,9 +105,6 @@ void SpellCheckerService::processMessages() {
 
             std::string userName = receivedMessage.substr(nameStart, nameEnd - nameStart);
             std::string sentence = receivedMessage.substr(nameEnd + 1, sentenceEnd - nameEnd - 1);
-
-            std::cout << "Parsed userName: " << userName << std::endl;
-            std::cout << "Parsed sentence: " << sentence << std::endl;
 
             // Handle help request
             if (sentence == "-help") {
@@ -133,16 +145,13 @@ void SpellCheckerService::processMessages() {
             std::string word, correctedSentence, correctedWord;
             bool isFirstWord = true;
             while (iss >> word) {
-                std::cout << "Processing word: " << word << std::endl;
                 correctedWord = findClosestWord(word);
-                std::cout << "Corrected word: " << correctedWord << std::endl;
                 if (!isFirstWord) correctedSentence += " ";
                 correctedSentence += correctedWord;
                 isFirstWord = false;
             }
 
             std::string responseMessage = "response<correctspelling<" + userName + "<" + correctedSentence + ">";
-            std::cout << "Sending response: " << responseMessage << std::endl;
             responder.send(zmq::buffer(responseMessage), zmq::send_flags::none);
         } catch (const std::exception& ex) {
             std::cerr << "Exception in processing message: " << ex.what() << std::endl;

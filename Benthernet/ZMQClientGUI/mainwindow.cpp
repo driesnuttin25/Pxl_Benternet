@@ -4,6 +4,11 @@
 #include <QDebug>
 #include <QPixmap>
 
+/**********************************
+*  Main Window Class Implementation
+**********************************/
+
+// Constructor: Initializes UI, sets up the client, and starts the response thread
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -27,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     responseThread = std::thread(&MainWindow::checkForResponses, this);
 }
 
+// Destructor: Cleans up resources
 MainWindow::~MainWindow() {
     running = false;
     if (responseThread.joinable()) {
@@ -36,11 +42,12 @@ MainWindow::~MainWindow() {
     delete client;
 }
 
+// Slot to handle username input change: Enables or disables the message input field
 void MainWindow::on_usernameLineEdit_textChanged(const QString &text) {
-    // Enable or disable the message input field based on the username input
     ui->lineEdit->setEnabled(!text.isEmpty());
 }
 
+// Slot to handle send button click: Validates input and sends a request to the server
 void MainWindow::on_sendButton_clicked() {
     qDebug() << "Send button clicked";  // Debugging message
 
@@ -83,12 +90,13 @@ void MainWindow::on_sendButton_clicked() {
     client->sendRequest(request);
 }
 
+// Method to check for responses from the server in a separate thread
 void MainWindow::checkForResponses() {
     while (running) {
         if (client->isResponseAvailable()) {
             std::string response = client->receiveResponse();
             if (!response.empty()) {
-                // Process the response to strip the prefix and display only the actual output
+                // This is just to process the output and not have the <response<username<....> infront of it
                 std::string output = response;
                 size_t startPos = response.find("response<");
                 if (startPos != std::string::npos) {

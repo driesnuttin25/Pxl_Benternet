@@ -7,10 +7,15 @@
 #include <vector>
 #include <random>
 
+/**********************************
+*  Random Sentence Service Class Declaration
+**********************************/
 class RandomSentenceService {
 public:
     explicit RandomSentenceService(const std::string& dictPath);
     ~RandomSentenceService();
+
+    // Process incoming messages and generate random sentences
     void processMessages();
 
 private:
@@ -20,6 +25,7 @@ private:
     std::ifstream dictionaryFile;
     std::vector<std::string> words;
 
+    // Generate a random sentence with the specified word count
     std::string generateRandomSentence(int wordCount);
 };
 

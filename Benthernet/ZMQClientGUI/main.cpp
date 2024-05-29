@@ -1,3 +1,6 @@
+/**********************************
+*  Main code
+**********************************/
 #include "mainwindow.h"
 #include <QApplication>
 

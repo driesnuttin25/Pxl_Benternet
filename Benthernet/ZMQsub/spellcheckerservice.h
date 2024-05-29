@@ -7,6 +7,10 @@
 #include <unordered_map>
 #include <chrono>
 
+/**********************************
+*  Spell Checker Service Class Declaration
+**********************************/
+
 // Structure to store user information for rate limiting
 struct UserInfo {
     int requestCount = 0;
@@ -17,6 +21,8 @@ class SpellCheckerService {
 public:
     explicit SpellCheckerService(const std::string& dictPath);
     ~SpellCheckerService();
+
+    // Process incoming messages and correct spellings
     void processMessages();
 
 private:
@@ -26,7 +32,10 @@ private:
     std::ifstream dictionaryFile;
     std::unordered_map<std::string, UserInfo> userLimits;
 
+    // Calculate the Levenshtein distance between two strings
     int levenshteinDP(const std::string& s1, const std::string& s2);
+
+    // Find the closest word in the dictionary to the input word
     std::string findClosestWord(const std::string& inputWord);
 };
 

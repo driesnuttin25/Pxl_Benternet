@@ -3,7 +3,10 @@
 #include <iostream>
 #include <thread>
 
-// Function to run spell checker service
+/**********************************
+*  Main Entry Point
+**********************************/
+
 void runSpellCheckerService() {
     try {
         SpellCheckerService spellCheckerService(R"(C:\Users\dries\dictionary.txt)");
@@ -13,7 +16,6 @@ void runSpellCheckerService() {
     }
 }
 
-// Function to run random sentence service
 void runRandomSentenceService() {
     try {
         RandomSentenceService randomSentenceService(R"(C:\Users\dries\dictionary.txt)");
@@ -34,6 +36,7 @@ int main() {
         // Join threads
         spellCheckerThread.join();
         randomSentenceThread.join();
+        // No idea how I got that to work but it seems to work
 
         std::cout << "Services initialized and running..." << std::endl;
     } catch (const std::exception& ex) {

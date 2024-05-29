@@ -5,6 +5,10 @@
 #include <iterator>
 #include <algorithm>
 
+/**********************************
+*  Random Sentence Service Class Implementation
+**********************************/
+
 RandomSentenceService::RandomSentenceService(const std::string& dictPath)
     : context(1), subscriber(context, ZMQ_SUB), responder(context, ZMQ_PUSH) {
     dictionaryFile.open(dictPath);
@@ -12,7 +16,7 @@ RandomSentenceService::RandomSentenceService(const std::string& dictPath)
         throw std::runtime_error("Failed to open dictionary file.");
     }
 
-    // Load dictionary words
+    // Load the dictionary
     std::string word;
     while (dictionaryFile >> word) {
         words.push_back(word);
@@ -24,12 +28,14 @@ RandomSentenceService::RandomSentenceService(const std::string& dictPath)
     std::cout << "Subscribed to topic: randomsentence<" << std::endl;
 }
 
+// Destructor: Close the dictionary file if open
 RandomSentenceService::~RandomSentenceService() {
     if (dictionaryFile.is_open()) {
         dictionaryFile.close();
     }
 }
 
+// Generate a random sentence with the specified word count
 std::string RandomSentenceService::generateRandomSentence(int wordCount) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -43,6 +49,7 @@ std::string RandomSentenceService::generateRandomSentence(int wordCount) {
     return sentence.str();
 }
 
+// Process incoming messages and generate appropriate responses
 void RandomSentenceService::processMessages() {
     while (true) {
         try {
@@ -51,6 +58,12 @@ void RandomSentenceService::processMessages() {
             subscriber.recv(message);
             std::string receivedMessage(static_cast<char*>(message.data()), message.size());
             std::cout << "Received message: " << receivedMessage << std::endl;
+
+            // Check if the message is for this service
+            if (receivedMessage.find("randomsentence<") != 0) {
+                std::cout << "Ignoring unrelated message: " << receivedMessage << std::endl;
+                continue;
+            }
 
             // Check if the message is a response and ignore it
             if (receivedMessage.find("response<") == 0) {
@@ -61,8 +74,6 @@ void RandomSentenceService::processMessages() {
             size_t nameStart = 15;  // Length of "randomsentence<"
             size_t nameEnd = receivedMessage.find('<', nameStart);
             size_t countEnd = receivedMessage.find('>', nameEnd);
-            std::cout << "nameStart: " << nameStart << ", nameEnd: " << nameEnd << ", countEnd: " << countEnd << std::endl;
-
             if (nameEnd == std::string::npos || countEnd == std::string::npos) {
                 std::cerr << "Malformed message received: " << receivedMessage << std::endl;
                 continue;
@@ -111,11 +122,10 @@ void RandomSentenceService::processMessages() {
 
             std::string generatedSentence = generateRandomSentence(wordCount);
             std::string responseMessage = "response<randomsentence<" + userName + "<" + generatedSentence + ">";
-            std::cout << "Sending response: " << responseMessage << std::endl;
+            std::cout << "Sending response: " + responseMessage << std::endl;
             responder.send(zmq::buffer(responseMessage), zmq::send_flags::none);
         } catch (const std::exception& ex) {
             std::cerr << "Exception in processing message: " << ex.what() << std::endl;
         }
     }
 }
-

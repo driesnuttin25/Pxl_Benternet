@@ -3,6 +3,11 @@
 #include <thread>
 #include <chrono>
 
+/**********************************
+*  Client Class Implementation
+**********************************/
+
+// Constructor: Initializes the ZMQ context and connects sockets
 Client::Client(const std::string& pushAddress, const std::string& subAddress)
     : context(1), pusher(context, zmq::socket_type::push), subscriber(context, zmq::socket_type::sub) {
     std::cout << "Connecting to " << pushAddress << " and " << subAddress << std::endl;
@@ -12,6 +17,7 @@ Client::Client(const std::string& pushAddress, const std::string& subAddress)
     std::cout << "Subscribed to all response topics" << std::endl;
 }
 
+// Sends a request to the server
 void Client::sendRequest(const std::string& request) {
     zmq::message_t zmqMessage(request.size());
     memcpy(zmqMessage.data(), request.c_str(), request.size());
@@ -33,6 +39,7 @@ void Client::sendRequest(const std::string& request) {
     }
 }
 
+// Receives a response from the server
 std::string Client::receiveResponse() {
     zmq::message_t message;
     subscriber.recv(message, zmq::recv_flags::none);
@@ -41,6 +48,7 @@ std::string Client::receiveResponse() {
     return response;
 }
 
+// Checks if a response is available from the server
 bool Client::isResponseAvailable() {
     zmq::pollitem_t items[] = { {static_cast<void*>(subscriber), 0, ZMQ_POLLIN, 0} };
     zmq::poll(&items[0], 1, std::chrono::milliseconds(100));
