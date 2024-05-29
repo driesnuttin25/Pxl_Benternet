@@ -1,5 +1,6 @@
-#include "spellcheckerservice.h"
 #include "randomsentenceservice.h"
+#include "spellcheckerservice.h"
+#include "logger.h"
 #include <iostream>
 #include <thread>
 
@@ -7,27 +8,32 @@
 *  Main Entry Point
 **********************************/
 
+// Function to run spell checker service
 void runSpellCheckerService() {
     try {
-        SpellCheckerService spellCheckerService(R"(C:\Users\dries\dictionary.txt)");
+        SpellCheckerService spellCheckerService(R"(C:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\dictionary.txt)");
         spellCheckerService.processMessages();
     } catch (const std::exception& ex) {
-        std::cerr << "Exception in SpellCheckerService: " << ex.what() << std::endl;
+        Logger::log(Logger::Level::ERROR, std::string("Exception in SpellCheckerService: ") + ex.what());
     }
 }
 
+// Function to run random sentence service
 void runRandomSentenceService() {
     try {
-        RandomSentenceService randomSentenceService(R"(C:\Users\dries\dictionary.txt)");
+        RandomSentenceService randomSentenceService(R"(C:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\dictionary.txt)");
         randomSentenceService.processMessages();
     } catch (const std::exception& ex) {
-        std::cerr << "Exception in RandomSentenceService: " << ex.what() << std::endl;
+        Logger::log(Logger::Level::ERROR, std::string("Exception in RandomSentenceService: ") + ex.what());
     }
 }
 
 int main() {
     try {
+        Logger::init(R"(C:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\service.log)");  // Initialize the logger
+
         std::cout << "Starting services..." << std::endl;
+        Logger::log(Logger::Level::INFO, "Starting services...");
 
         // Create threads for each service
         std::thread spellCheckerThread(runSpellCheckerService);
@@ -36,11 +42,13 @@ int main() {
         // Join threads
         spellCheckerThread.join();
         randomSentenceThread.join();
-        // No idea how I got that to work but it seems to work
 
         std::cout << "Services initialized and running..." << std::endl;
+        Logger::log(Logger::Level::INFO, "Services initialized and running...");
     } catch (const std::exception& ex) {
-        std::cerr << "Exception in main: " << ex.what() << std::endl;
+        Logger::log(Logger::Level::ERROR, std::string("Exception in main: ") + ex.what());
     }
+
+    Logger::close();  // Close the logger
     return 0;
 }
