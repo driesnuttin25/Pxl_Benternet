@@ -6,9 +6,10 @@ This project provides two services: a spelling correction service and a random s
 ## Contents of Repository
 - dictionary.txt: A text file containing valid words used for spell-checking and random sentence generation.
 - ZMQsub/: Folder containing the server components.
-- ZMQpush/: Folder containing the client component.
+- ZMQClientUI/: Folder containing the client component.
 - lib/: Folder containing ZeroMQ static libraries.
 - include/: Folder containing ZeroMQ header files.
+- service/: Folder containig a log from all the service traffic
 
 ## Requirements
 - C++ compiler (e.g., g++, clang)
@@ -25,8 +26,8 @@ git clone https://github.com/driesnuttin25/Pxl_Benternet.git
 ## Architecture
 ![diagram](https://github.com/driesnuttin25/Pxl_Benternet/assets/114076101/860e1851-5262-4f5f-b7e1-b9d44f1205f1)
 
-### Server (ZMQsub)
-The ZMQsub server includes two services: `SpellCheckerService` and `RandomSentenceService`. Both services listen for incoming requests over a ZMQ SUB socket and send responses over a ZMQ PUSH socket.
+### Service (ZMQsub)
+The ZMQsub Service includes two services: `SpellCheckerService` and `RandomSentenceService`. Both services listen for incoming requests over a ZMQ SUB socket and send responses over a ZMQ PUSH socket.
 
 - **SpellCheckerService**:
   - Connects to the broker at `tcp://benternet.pxl-ea-ict.be:24042` to subscribe to spelling requests.
@@ -50,9 +51,10 @@ The ZMQpush client allows users to send requests to the ZMQsub servers and recei
   - The user inputs a request for either spelling correction or random sentence generation.
   - Sends the request to the server with the appropriate topic (`spellingschecker<` or `randomsentence<`).
   - Receives the response from the server and displays it to the user.
+  - All of this is wrapped in a Qt GUI that is easy to understand.
 
 ## Usage Without ZMQpush
-If users choose not to utilize the ZMQpush client, they can interact with the services as follows:
+If users choose not to utilize the ZMQClientGUI, they can interact with the services as follows:
 
 1) Establish a ZMQ PUSH socket in their own client implementation.
 2) Connect to `tcp://benternet.pxl-ea-ict.be:24041` and send messages with the topic `spellingschecker<` or `randomsentence<` followed by the respective request.
