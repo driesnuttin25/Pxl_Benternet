@@ -6,6 +6,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <chrono>
+#include <set>
 
 /**********************************
 *  Spell Checker Service Class Declaration
@@ -32,11 +33,17 @@ private:
     std::ifstream dictionaryFile;
     std::unordered_map<std::string, UserInfo> userLimits;
 
+    int interactionCount;
+    std::set<std::string> userNames;
+
     // Calculate the Levenshtein distance between two strings
     int levenshteinDP(const std::string& s1, const std::string& s2);
 
     // Find the closest word in the dictionary to the input word
     std::string findClosestWord(const std::string& inputWord);
+
+    // Log interactions
+    void logInteraction(const std::string& userName);
 };
 
 #endif // SPELLCHECKERSERVICE_H

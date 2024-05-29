@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 #include <random>
+#include <unordered_map>
+#include <set>
 
 /**********************************
 *  Random Sentence Service Class Declaration
@@ -25,8 +27,14 @@ private:
     std::ifstream dictionaryFile;
     std::vector<std::string> words;
 
+    int interactionCount;
+    std::set<std::string> userNames;
+
     // Generate a random sentence with the specified word count
     std::string generateRandomSentence(int wordCount);
+
+    // Log interactions
+    void logInteraction(const std::string& userName);
 };
 
 #endif // RANDOMSENTENCESERVICE_H
