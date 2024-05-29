@@ -24,7 +24,52 @@ git clone https://github.com/driesnuttin25/Pxl_Benternet.git
 2) The repository includes all necessary ZMQ components, so no additional installation is required.
 
 ## Architecture
-![diagram](https://github.com/driesnuttin25/Pxl_Benternet/assets/114076101/860e1851-5262-4f5f-b7e1-b9d44f1205f1)
+The general ZMQ architecture is presented below by a sequence diagram.
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Broker
+    participant SpellCheckerService
+    participant RandomSentenceService
+    participant Logger
+
+    Client->>Broker: spellingschecker<Dries<Thiss is an exmple sentence>
+    Broker->>SpellCheckerService: spellingschecker<Dries<Thiss is an exmple sentence>
+    SpellCheckerService->>SpellCheckerService: Extract username and sentence
+    SpellCheckerService->>SpellCheckerService: Perform spell checking
+    SpellCheckerService->>Logger: Log interaction
+    SpellCheckerService->>Broker: response<correctspelling<Dries<this is an example sentence>
+    Broker->>Client: response<correctspelling<Dries<this is an example sentence>
+    
+    Client->>Broker: randomsentence<Imee<5>
+    Broker->>RandomSentenceService: randomsentence<Imee<5>
+    RandomSentenceService->>RandomSentenceService: Extract username and word count
+    RandomSentenceService->>RandomSentenceService: Generate random sentence
+    RandomSentenceService->>Logger: Log interaction
+    RandomSentenceService->>Broker: response<randomsentence<Imee<the answer to life is>
+    Broker->>Client: response<randomsentence<Imee<the answer to life is>
+```
+Ofcourse this is not all that the program can do. There is for instance a way for the client to ask for help if something is note clear.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Broker
+    participant SpellCheckerService
+    participant RandomSentenceService
+
+    Client->>Broker: spellingschecker<Dries<-help>
+    Broker->>SpellCheckerService: spellingschecker<Dries<-help>
+    SpellCheckerService->>Broker: response<correctspelling<Dries<Help message>
+    Broker->>Client: response<correctspelling<Dries<Help message>
+    
+    Client->>Broker: randomsentence<Imee<-help>
+    Broker->>RandomSentenceService: randomsentence<Imee<-help>
+    RandomSentenceService->>Broker: response<randomsentence<Imee<Help message>
+    Broker->>Client: response<randomsentence<Imee<Help message>
+
+```
+
 
 ### Service (ZMQsub)
 The ZMQsub Service includes two services: `SpellCheckerService` and `RandomSentenceService`. Both services listen for incoming requests over a ZMQ SUB socket and send responses over a ZMQ PUSH socket.
@@ -34,12 +79,42 @@ The ZMQsub Service includes two services: `SpellCheckerService` and `RandomSente
   - Listens for messages with the topic `spellingschecker<`.
   - Processes each word in the sentence, compares it to the `dictionary.txt` file, and constructs a corrected sentence.
   - Sends the corrected sentence back to the broker with the topic `response<correctspelling<`.
+Let us for instance take this code and see exactly what happens behind the scenes. Here is the logic behind the handeling:
+### Detailed SpellCheckerService Flowchart
+
+```mermaid
+flowchart TD
+    A[Start Service] --> B[Connect to Broker and Subscribe to spellingschecker<]
+    B --> C[Initialize Logger and Load Dictionary]
+    C --> D[Wait for Incoming Message]
+    
+    D -->|Message Received| E[Extract Username and Sentence]
+    E --> F{Is Message Valid?}
+    
+    F -->|No| G[Log Error]
+    G --> H[Send Error Response]
+    H --> D
+    
+    F -->|Yes| I[Check for Help Request]
+    I -->|Yes| J[Generate Help Message]
+    J --> K[Send Help Response]
+    K --> D
+    
+    I -->|No| L[Perform Spell Checking]
+    L --> M[Generate Corrected Sentence]
+    M --> N[Log Interaction]
+    N --> O[Send Corrected Sentence Response]
+    O --> D
+    
+    D -->|No Message| D[Wait for Incoming Message]
+ ```
 
 - **RandomSentenceService**:
   - Connects to the broker at `tcp://benternet.pxl-ea-ict.be:24042` to subscribe to random sentence requests.
   - Listens for messages with the topic `randomsentence<`.
   - Generates a random sentence based on the specified word count using words from the `dictionary.txt` file.
   - Sends the generated sentence back to the broker with the topic `response<randomsentence<`.
+ 
 
 ### Client (ZMQpush)
 The ZMQpush client allows users to send requests to the ZMQsub servers and receive responses. It connects to a ZMQ PUSH socket for sending requests and a ZMQ SUB socket for receiving responses.
