@@ -116,10 +116,11 @@ compiler_clean:
 
 ####### Compile
 
-release/main.o: ../../main.cpp ../../spellcheckerservice.h \
+release/main.o: ../../main.cpp ../../randomsentenceservice.h \
 		../../../include/zmq.hpp \
 		../../../include/zmq.h \
-		../../randomsentenceservice.h
+		../../spellcheckerservice.h \
+		../../logger.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\..\main.cpp
 
 release/BaseCommunication.o: ../../BaseCommunication.cpp ../../BaseCommunication.h \
