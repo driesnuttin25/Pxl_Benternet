@@ -3,10 +3,21 @@
 #include "logger.h"
 #include <iostream>
 #include <thread>
+#include <chrono>
+#include <zmq.hpp>
 
-/**********************************
-*  Main Entry Point
-**********************************/
+// Function to send heartbeat messages
+void sendHeartbeat() {
+    zmq::context_t context(1);
+    zmq::socket_t socket(context, ZMQ_PUSH);
+    socket.connect("tcp://benternet.pxl-ea-ict.be:24041");
+
+    while (true) {
+        socket.send(zmq::buffer("<dries<heartbeat>"), zmq::send_flags::none);
+        Logger::log(Logger::Level::INFO, "Sent heartbeat: <dries<heartbeat>");
+        std::this_thread::sleep_for(std::chrono::seconds(15));
+    }
+}
 
 // Function to run spell checker service
 void runSpellCheckerService() {
@@ -32,18 +43,18 @@ int main() {
     try {
         Logger::init(R"(C:\Users\dries\OneDrive\Desktop\git\Pxl_Benternet\Benthernet\service.log)");  // Initialize the logger
 
-        //std::cout << "Starting services..." << std::endl;
         Logger::log(Logger::Level::INFO, "Starting services...");
 
-        // Create threads for each service so that they don't get overloaded when Bart inevitably checks that
+        // Create threads for each service and heartbeat
         std::thread spellCheckerThread(runSpellCheckerService);
         std::thread randomSentenceThread(runRandomSentenceService);
+        std::thread heartbeatThread(sendHeartbeat);
 
         // Join threads
         spellCheckerThread.join();
         randomSentenceThread.join();
+        heartbeatThread.join();
 
-        //std::cout << "Services initialized and running..." << std::endl;
         Logger::log(Logger::Level::INFO, "Services initialized and running...");
     } catch (const std::exception& ex) {
         Logger::log(Logger::Level::ERROR, std::string("Exception in main: ") + ex.what());
