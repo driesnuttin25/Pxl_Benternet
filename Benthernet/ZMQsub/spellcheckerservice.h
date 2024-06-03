@@ -7,12 +7,8 @@
 #include <unordered_map>
 #include <chrono>
 #include <set>
+#include "passwordhandler.h"
 
-/**********************************
-*  Spell Checker Service Class Declaration
-**********************************/
-
-// Structure to store user information for rate limiting
 struct UserInfo {
     int requestCount = 0;
     std::chrono::system_clock::time_point resetTime;
@@ -30,17 +26,12 @@ private:
     zmq::socket_t responder;
     std::ifstream dictionaryFile;
     std::unordered_map<std::string, UserInfo> userLimits;
-
     int interactionCount;
     std::set<std::string> userNames;
+    PasswordHandler passwordHandler; // Add this line
 
-    // Calculate the Levenshtein distance between two strings
     int levenshteinDP(const std::string& s1, const std::string& s2);
-
-    // Find the closest word in the dictionary to the input word
     std::string findClosestWord(const std::string& inputWord);
-
-    // Log interactions
     void logInteraction(const std::string& userName);
 };
 

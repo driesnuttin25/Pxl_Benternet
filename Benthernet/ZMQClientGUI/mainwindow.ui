@@ -216,7 +216,7 @@
      <string>Please fill in your password</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Register">
+   <widget class="QPushButton" name="registerButton">
     <property name="geometry">
      <rect>
       <x>420</x>

@@ -674,3 +674,176 @@
 [2024-06-03 11:08:23] [INFO] Sending response: response<randomsentence<dries<buchanan casting>
 [2024-06-03 11:08:23] [INFO] Waiting to receive message...
 [2024-06-03 11:08:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 11:54:42] [INFO] Starting services...
+[2024-06-03 11:54:42] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 11:54:42] [INFO] Subscribed to topic: spellingschecker<
+[2024-06-03 11:54:42] [INFO] Waiting to receive message...
+[2024-06-03 11:54:42] [INFO] Subscribed to topic: randomsentence<
+[2024-06-03 11:54:42] [INFO] Waiting to receive message...
+[2024-06-03 12:07:59] [INFO] Starting services...
+[2024-06-03 12:07:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:07:59] [INFO] Subscribed to topic: spellingschecker<
+[2024-06-03 12:07:59] [INFO] Waiting to receive message...
+[2024-06-03 12:07:59] [INFO] Subscribed to topic: randomsentence<
+[2024-06-03 12:07:59] [INFO] Waiting to receive message...
+[2024-06-03 12:08:32] [INFO] Received message: spellingschecker<dries<123<1<zda azd azda z>
+[2024-06-03 12:08:32] [ERROR] Invalid credentials for user: dries
+[2024-06-03 12:08:32] [INFO] Waiting to receive message...
+[2024-06-03 12:08:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:09:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:10:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:11:16] [INFO] Received message: spellingschecker<dries<123<-help>
+[2024-06-03 12:11:16] [ERROR] Malformed message received: spellingschecker<dries<123<-help>
+[2024-06-03 12:11:16] [INFO] Waiting to receive message...
+[2024-06-03 12:11:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:12:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:13:59] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:14:30] [INFO] Starting services...
+[2024-06-03 12:14:30] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:14:30] [INFO] Subscribed to topic: spellingschecker<
+[2024-06-03 12:14:30] [INFO] Waiting to receive message...
+[2024-06-03 12:14:30] [INFO] Subscribed to topic: randomsentence<
+[2024-06-03 12:14:30] [INFO] Waiting to receive message...
+[2024-06-03 12:14:54] [INFO] Received message: spellingschecker<dries<123<-help>
+[2024-06-03 12:14:54] [ERROR] Malformed message received: spellingschecker<dries<123<-help>
+[2024-06-03 12:14:54] [INFO] Waiting to receive message...
+[2024-06-03 12:15:03] [INFO] Received message: spellingschecker<dries<123<5<gazgazgazga>
+[2024-06-03 12:15:03] [ERROR] Invalid credentials for user: dries
+[2024-06-03 12:15:03] [INFO] Waiting to receive message...
+[2024-06-03 12:15:30] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:16:30] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:17:30] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:18:30] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:18:45] [INFO] Starting services...
+[2024-06-03 12:18:45] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:18:45] [INFO] Subscribed to topic: spellingschecker< and register<
+[2024-06-03 12:18:45] [INFO] Waiting to receive message...
+[2024-06-03 12:18:45] [INFO] Subscribed to topic: randomsentence< and register<
+[2024-06-03 12:18:45] [INFO] Waiting to receive message...
+[2024-06-03 12:18:49] [INFO] Received message: register<dries<123>
+[2024-06-03 12:18:49] [INFO] Received message: register<dries<123>
+[2024-06-03 12:18:49] [INFO] User registered: dries
+[2024-06-03 12:18:49] [INFO] User registered: dries
+[2024-06-03 12:18:49] [INFO] Waiting to receive message...
+[2024-06-03 12:18:49] [INFO] Received message: register<dries<123>
+[2024-06-03 12:18:49] [ERROR] User already exists: dries
+[2024-06-03 12:18:49] [INFO] Waiting to receive message...
+[2024-06-03 12:18:49] [INFO] Waiting to receive message...
+[2024-06-03 12:18:49] [INFO] Received message: register<dries<123>
+[2024-06-03 12:18:49] [ERROR] User already exists: dries
+[2024-06-03 12:18:49] [INFO] Waiting to receive message...
+[2024-06-03 12:19:00] [INFO] Received message: spellingschecker<dries<123<5<gazgazgazga>
+[2024-06-03 12:19:00] [INFO] Total interactions: 1
+[2024-06-03 12:19:00] [INFO] Users interacted: 1
+[2024-06-03 12:19:00] [INFO] Waiting to receive message...
+[2024-06-03 12:19:03] [INFO] Received message: spellingschecker<dries<123<5<dzadazd azdaz daz da azd az>
+[2024-06-03 12:19:03] [INFO] Total interactions: 2
+[2024-06-03 12:19:03] [INFO] Users interacted: 1
+[2024-06-03 12:19:04] [INFO] Waiting to receive message...
+[2024-06-03 12:19:08] [INFO] Received message: spellingschecker<dries<123<-help>
+[2024-06-03 12:19:08] [ERROR] Malformed message received: spellingschecker<dries<123<-help>
+[2024-06-03 12:19:08] [INFO] Waiting to receive message...
+[2024-06-03 12:19:19] [INFO] Received message: spellingschecker<dries<1232<5<DZA>
+[2024-06-03 12:19:19] [ERROR] Invalid credentials for user: dries
+[2024-06-03 12:19:19] [INFO] Waiting to receive message...
+[2024-06-03 12:19:28] [INFO] Received message: randomsentence<dries<123<5>
+[2024-06-03 12:19:28] [INFO] Total interactions: 1
+[2024-06-03 12:19:28] [INFO] Users interacted: 1
+[2024-06-03 12:19:28] [INFO] Sending response: response<randomsentence<dries<nuts unrated dresses mpc jd>
+[2024-06-03 12:19:28] [INFO] Waiting to receive message...
+[2024-06-03 12:19:45] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:20:45] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:21:04] [INFO] Starting services...
+[2024-06-03 12:21:04] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:21:04] [INFO] Subscribed to topic: spellingschecker< and register<
+[2024-06-03 12:21:04] [INFO] Waiting to receive message...
+[2024-06-03 12:21:04] [INFO] Subscribed to topic: randomsentence< and register<
+[2024-06-03 12:21:04] [INFO] Waiting to receive message...
+[2024-06-03 12:21:10] [INFO] Received message: randomsentence<dries<123<-help>
+[2024-06-03 12:21:10] [INFO] Total interactions: 1
+[2024-06-03 12:21:10] [INFO] Users interacted: 1
+[2024-06-03 12:21:10] [INFO] Waiting to receive message...
+[2024-06-03 12:21:20] [INFO] Received message: randomsentence<dries<123<2>
+[2024-06-03 12:21:20] [INFO] Total interactions: 2
+[2024-06-03 12:21:20] [INFO] Users interacted: 1
+[2024-06-03 12:21:20] [INFO] Sending response: response<randomsentence<dries<marino photographer>
+[2024-06-03 12:21:20] [INFO] Waiting to receive message...
+[2024-06-03 12:21:25] [INFO] Received message: spellingschecker<dries<123<5<heihgae guiaf hfziuifdhaz fi hazfiu faziufhaz f>
+[2024-06-03 12:21:25] [INFO] Total interactions: 1
+[2024-06-03 12:21:25] [INFO] Users interacted: 1
+[2024-06-03 12:21:26] [INFO] Waiting to receive message...
+[2024-06-03 12:21:31] [INFO] Received message: spellingschecker<dries<123<5<heihgae guiaf hfziuifdhaz fi hazfiu faziufhaz fzad daz dazd >
+[2024-06-03 12:21:31] [INFO] Total interactions: 2
+[2024-06-03 12:21:31] [INFO] Users interacted: 1
+[2024-06-03 12:21:31] [INFO] Waiting to receive message...
+[2024-06-03 12:22:04] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:22:31] [INFO] Received message: spellingschecker<dries<123<-help>
+[2024-06-03 12:22:31] [ERROR] Malformed message received: spellingschecker<dries<123<-help>
+[2024-06-03 12:22:31] [INFO] Waiting to receive message...
+[2024-06-03 12:22:33] [INFO] Received message: spellingschecker<dries<123<-help>
+[2024-06-03 12:22:33] [ERROR] Malformed message received: spellingschecker<dries<123<-help>
+[2024-06-03 12:22:33] [INFO] Waiting to receive message...
+[2024-06-03 12:22:40] [INFO] Received message: spellingschecker<dries<123<-help>
+[2024-06-03 12:22:40] [ERROR] Malformed message received: spellingschecker<dries<123<-help>
+[2024-06-03 12:22:40] [INFO] Waiting to receive message...
+[2024-06-03 12:22:42] [INFO] Received message: randomsentence<dries<123<-help>
+[2024-06-03 12:22:42] [INFO] Total interactions: 3
+[2024-06-03 12:22:42] [INFO] Users interacted: 1
+[2024-06-03 12:22:42] [INFO] Waiting to receive message...
+[2024-06-03 12:23:04] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:23:41] [INFO] Received message: spellingschecker<dries<123<2<hello thizz isss a teazdaz>
+[2024-06-03 12:23:41] [INFO] Total interactions: 3
+[2024-06-03 12:23:41] [INFO] Users interacted: 1
+[2024-06-03 12:23:41] [INFO] Waiting to receive message...
+[2024-06-03 12:24:04] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:24:18] [INFO] Received message: spellingschecker<dries<123<2<udazhd iuazhdazi uhdazui dazuidhad uiazh>
+[2024-06-03 12:24:18] [INFO] Total interactions: 4
+[2024-06-03 12:24:18] [INFO] Users interacted: 1
+[2024-06-03 12:24:19] [INFO] Waiting to receive message...
+[2024-06-03 12:24:28] [INFO] Received message: spellingschecker<dries<123<dzd<udazhd iuazhdazi uhdazui dazuidhad uiazh>
+[2024-06-03 12:24:28] [INFO] Total interactions: 5
+[2024-06-03 12:24:28] [INFO] Users interacted: 1
+[2024-06-03 12:24:28] [ERROR] Invalid number format for limit: dzd
+[2024-06-03 12:24:28] [INFO] Waiting to receive message...
+[2024-06-03 12:24:36] [INFO] Received message: spellingschecker<dries<123<10000<udazhd iuazhdazi uhdazui dazuidhad uiazh>
+[2024-06-03 12:24:36] [INFO] Total interactions: 6
+[2024-06-03 12:24:36] [INFO] Users interacted: 1
+[2024-06-03 12:24:36] [INFO] Waiting to receive message...
+[2024-06-03 12:24:42] [INFO] Received message: spellingschecker<dries<123<-5<udazhd iuazhdazi uhdazui dazuidhad uiazh>
+[2024-06-03 12:24:42] [INFO] Total interactions: 7
+[2024-06-03 12:24:42] [INFO] Users interacted: 1
+[2024-06-03 12:24:42] [INFO] Waiting to receive message...
+[2024-06-03 12:25:04] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:25:28] [INFO] Received message: register<bart<69420>
+[2024-06-03 12:25:28] [INFO] User registered: bart
+[2024-06-03 12:25:28] [INFO] Waiting to receive message...
+[2024-06-03 12:25:28] [INFO] Received message: register<bart<69420>
+[2024-06-03 12:25:28] [ERROR] User already exists: bart
+[2024-06-03 12:25:28] [INFO] Waiting to receive message...
+[2024-06-03 12:25:28] [INFO] Received message: register<bart<69420>
+[2024-06-03 12:25:28] [INFO] User registered: bart
+[2024-06-03 12:25:28] [INFO] Waiting to receive message...
+[2024-06-03 12:25:28] [INFO] Received message: register<bart<69420>
+[2024-06-03 12:25:28] [ERROR] User already exists: bart
+[2024-06-03 12:25:28] [INFO] Waiting to receive message...
+[2024-06-03 12:25:39] [INFO] Received message: spellingschecker<bart<69420<-5<udazhd iuazhdazi uhdazui dazuidhad uiazh>
+[2024-06-03 12:25:39] [INFO] Total interactions: 8
+[2024-06-03 12:25:39] [INFO] Users interacted: 2
+[2024-06-03 12:25:39] [INFO] Waiting to receive message...
+[2024-06-03 12:25:50] [INFO] Received message: spellingschecker<bart<985498489<-5<udazhd iuazhdazi uhdazui dazuidhad uiazh>
+[2024-06-03 12:25:50] [ERROR] Invalid credentials for user: bart
+[2024-06-03 12:25:50] [INFO] Waiting to receive message...
+[2024-06-03 12:26:02] [INFO] Received message: randomsentence<bart<985498489<5>
+[2024-06-03 12:26:02] [ERROR] Invalid credentials for user: bart
+[2024-06-03 12:26:02] [INFO] Waiting to receive message...
+[2024-06-03 12:26:04] [INFO] Sent heartbeat: <dries<heartbeat>
+[2024-06-03 12:26:06] [INFO] Received message: randomsentence<bart<69420<5>
+[2024-06-03 12:26:06] [INFO] Total interactions: 4
+[2024-06-03 12:26:06] [INFO] Users interacted: 2
+[2024-06-03 12:26:06] [INFO] Sending response: response<randomsentence<bart<morrison ministries desert nom terror>
+[2024-06-03 12:26:06] [INFO] Waiting to receive message...
+[2024-06-03 12:26:29] [INFO] Received message: randomsentence<bart<69420<-help>
+[2024-06-03 12:26:29] [INFO] Total interactions: 5
+[2024-06-03 12:26:29] [INFO] Users interacted: 2
+[2024-06-03 12:26:29] [INFO] Waiting to receive message...
+[2024-06-03 12:27:04] [INFO] Sent heartbeat: <dries<heartbeat>

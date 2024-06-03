@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Connect the send button's clicked signal to the on_sendButton_clicked slot
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::on_sendButton_clicked);
     connect(ui->usernameLineEdit, &QLineEdit::textChanged, this, &MainWindow::on_usernameLineEdit_textChanged);
+    connect(ui->registerButton, &QPushButton::clicked, this, &MainWindow::on_registerButton_clicked); // Added this line
 
     // Start the response checking thread
     responseThread = std::thread(&MainWindow::checkForResponses, this);
@@ -47,6 +48,7 @@ void MainWindow::on_usernameLineEdit_textChanged(const QString &text) {
     ui->lineEdit->setEnabled(!text.isEmpty());
 }
 
+// Slot to handle register button click
 void MainWindow::on_registerButton_clicked() {
     QString username = ui->usernameLineEdit->text();
     QString password = ui->passwordLineEdit->text();
@@ -64,7 +66,6 @@ void MainWindow::on_registerButton_clicked() {
     std::string request = "register<" + username.toStdString() + "<" + password.toStdString() + ">";
     client->sendRequest(request);
 }
-
 
 // Slot to handle send button click: Validates input and sends a request to the server
 void MainWindow::on_sendButton_clicked() {
@@ -120,9 +121,6 @@ void MainWindow::on_sendButton_clicked() {
     client->sendRequest(request);
 }
 
-
-
-
 // Method to check for responses from the server in a separate thread
 void MainWindow::checkForResponses() {
     while (running) {
@@ -175,4 +173,3 @@ void MainWindow::checkForResponses() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Polling interval
     }
 }
-
