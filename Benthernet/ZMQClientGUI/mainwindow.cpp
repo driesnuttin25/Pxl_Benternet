@@ -74,8 +74,14 @@ void MainWindow::on_sendButton_clicked() {
             request = "randomsentence<" + username.toStdString() + "<-help>";
         }
     } else {
+        QString limit = ui->limit->text(); // Get the limit from the QLineEdit
         if (serviceType == "Spelling Checker") {
-            request = "spellingschecker<" + username.toStdString() + "<" + input.toStdString() + ">";
+            // Ok so I added a limit error here because it was interfering with the help as it would need the user to enter a limit for the -help request
+            if (limit.isEmpty()) {
+                QMessageBox::warning(this, "Input Error", "Please enter the limit.");
+                return;
+            }
+            request = "spellingschecker<" + username.toStdString() + "<" + limit.toStdString() + "<" + input.toStdString() + ">";
         } else if (serviceType == "Random Sentence Generator") {
             bool ok;
             int wordCount = input.toInt(&ok);
@@ -90,26 +96,51 @@ void MainWindow::on_sendButton_clicked() {
     client->sendRequest(request);
 }
 
+
+
+
 // Method to check for responses from the server in a separate thread
 void MainWindow::checkForResponses() {
     while (running) {
         if (client->isResponseAvailable()) {
             std::string response = client->receiveResponse();
             if (!response.empty()) {
-                // This is just to process the output and not have the <response<username<....> infront of it
+                // Process the output to handle the correct response format
                 std::string output = response;
                 size_t startPos = response.find("response<");
                 if (startPos != std::string::npos) {
                     startPos = response.find('<', startPos + 9); // Skip "response<"
                     if (startPos != std::string::npos) {
-                        startPos = response.find('<', startPos + 1); // Skip the service type
-                        if (startPos != std::string::npos) {
-                            output = response.substr(startPos + 1);
+                        size_t serviceTypePos = response.find('<', startPos + 1);
+                        if (serviceTypePos != std::string::npos) {
+                            std::string serviceType = response.substr(startPos + 1, serviceTypePos - startPos - 1);
+                            if (serviceType == "correctspelling") {
+                                // Handle help response
+                                if (response.find("Spell Checker Service:") != std::string::npos) {
+                                    output = response.substr(serviceTypePos + 1);
+                                    if (!output.empty() && output.back() == '>') {
+                                        output.pop_back();
+                                    }
+                                } else {
+                                    // Handle regular correct spelling response
+                                    size_t userNamePos = response.find('<', serviceTypePos + 1);
+                                    size_t limitPos = response.find('<', userNamePos + 1);
+                                    if (userNamePos != std::string::npos && limitPos != std::string::npos) {
+                                        output = response.substr(limitPos + 1);
+                                        if (!output.empty() && output.back() == '>') {
+                                            output.pop_back();
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Handle other service types (e.g., randomsentence)
+                                output = response.substr(serviceTypePos + 1);
+                                if (!output.empty() && output.back() == '>') {
+                                    output.pop_back();
+                                }
+                            }
                         }
                     }
-                }
-                if (!output.empty() && output.back() == '>') {
-                    output.pop_back();
                 }
 
                 // Display the cleaned response in the text edit
