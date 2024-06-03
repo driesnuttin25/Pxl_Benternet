@@ -22,8 +22,6 @@ class SpellCheckerService {
 public:
     explicit SpellCheckerService(const std::string& dictPath);
     ~SpellCheckerService();
-
-    // Process incoming messages and correct spellings
     void processMessages();
 
 private:

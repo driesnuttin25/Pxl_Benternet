@@ -15,7 +15,7 @@ void sendHeartbeat() {
     while (true) {
         socket.send(zmq::buffer("<dries<heartbeat>"), zmq::send_flags::none);
         Logger::log(Logger::Level::INFO, "Sent heartbeat: <dries<heartbeat>");
-        std::this_thread::sleep_for(std::chrono::seconds(15));
+        std::this_thread::sleep_for(std::chrono::seconds(60));
     }
 }
 
