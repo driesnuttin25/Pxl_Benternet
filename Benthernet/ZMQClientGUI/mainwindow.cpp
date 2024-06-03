@@ -47,15 +47,40 @@ void MainWindow::on_usernameLineEdit_textChanged(const QString &text) {
     ui->lineEdit->setEnabled(!text.isEmpty());
 }
 
+void MainWindow::on_registerButton_clicked() {
+    QString username = ui->usernameLineEdit->text();
+    QString password = ui->passwordLineEdit->text();
+
+    if (username.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Please enter your username.");
+        return;
+    }
+
+    if (password.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Please enter your password.");
+        return;
+    }
+
+    std::string request = "register<" + username.toStdString() + "<" + password.toStdString() + ">";
+    client->sendRequest(request);
+}
+
+
 // Slot to handle send button click: Validates input and sends a request to the server
 void MainWindow::on_sendButton_clicked() {
     qDebug() << "Send button clicked";  // Debugging message
 
     QString username = ui->usernameLineEdit->text();
+    QString password = ui->passwordLineEdit->text(); // Get the password
     QString input = ui->lineEdit->text();
 
     if (username.isEmpty()) {
         QMessageBox::warning(this, "Input Error", "Please enter your username.");
+        return;
+    }
+
+    if (password.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Please enter your password.");
         return;
     }
 
@@ -69,19 +94,18 @@ void MainWindow::on_sendButton_clicked() {
 
     if (input == "-help") {
         if (serviceType == "Spelling Checker") {
-            request = "spellingschecker<" + username.toStdString() + "<-help>";
+            request = "spellingschecker<" + username.toStdString() + "<" + password.toStdString() + "<-help>";
         } else if (serviceType == "Random Sentence Generator") {
-            request = "randomsentence<" + username.toStdString() + "<-help>";
+            request = "randomsentence<" + username.toStdString() + "<" + password.toStdString() + "<-help>";
         }
     } else {
         QString limit = ui->limit->text(); // Get the limit from the QLineEdit
         if (serviceType == "Spelling Checker") {
-            // Ok so I added a limit error here because it was interfering with the help as it would need the user to enter a limit for the -help request
             if (limit.isEmpty()) {
                 QMessageBox::warning(this, "Input Error", "Please enter the limit.");
                 return;
             }
-            request = "spellingschecker<" + username.toStdString() + "<" + limit.toStdString() + "<" + input.toStdString() + ">";
+            request = "spellingschecker<" + username.toStdString() + "<" + password.toStdString() + "<" + limit.toStdString() + "<" + input.toStdString() + ">";
         } else if (serviceType == "Random Sentence Generator") {
             bool ok;
             int wordCount = input.toInt(&ok);
@@ -89,7 +113,7 @@ void MainWindow::on_sendButton_clicked() {
                 QMessageBox::warning(this, "Input Error", "Please enter a valid number of words.");
                 return;
             }
-            request = "randomsentence<" + username.toStdString() + "<" + std::to_string(wordCount) + ">";
+            request = "randomsentence<" + username.toStdString() + "<" + password.toStdString() + "<" + std::to_string(wordCount) + ">";
         }
     }
 
@@ -151,3 +175,4 @@ void MainWindow::checkForResponses() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Polling interval
     }
 }
+

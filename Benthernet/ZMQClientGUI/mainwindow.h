@@ -22,6 +22,9 @@ public:
     ~MainWindow();
 
 private slots:
+    // New register button
+    void on_registerButton_clicked();
+
     // Slot to handle send button click
     void on_sendButton_clicked();
 
